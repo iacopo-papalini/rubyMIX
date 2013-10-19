@@ -1,0 +1,100 @@
+instructions:
+  - - NOP
+  - ADD
+  - SUB
+  - MUL
+  - DIV
+  - NUM
+  - - SLA
+    - SRA
+    - SLAX
+    - SRAX
+    - SLC
+    - SRC
+  - MOVE
+  - LDA
+  - LD1
+  - LD2
+  - LD3
+  - LD4
+  - LD5
+  - LD6
+  - LDX
+  - LDAN
+  - LD1N
+  - LD2N
+  - LD3N
+  - LD4N
+  - LD5N
+  - LD6N
+  - LDXN
+  - STA
+  - ST1
+  - ST2
+  - ST3
+  - ST4
+  - ST5
+  - ST6
+  - STX
+  - -
+    -
+    - STJ # This way the default for STJ is (0:2) instead of (0:5)
+  - STZ
+  - JBUS
+  - IOC
+  - IN
+  - OUT
+  - JRED
+  - - JMP
+    - JSJ
+    - JOV
+    - JNOV
+  - JA
+  - J1
+  - J2
+  - J3
+  - J4
+  - J5
+  - J6
+  - JX
+  - - INCA
+    - DECA
+    - ENTA
+    - ENNA
+  - - INC1
+    - DEC1
+    - ENT1
+    - ENN1
+  - - INC2
+    - DEC2
+    - ENT2
+    - ENN2
+  - - INC3
+    - DEC3
+    - ENT3
+    - ENN3
+  - - INC4
+    - DEC4
+    - ENT4
+    - ENN4
+  - - INC5
+    - DEC5
+    - ENT5
+    - ENN5
+  - - INC6
+    - DEC6
+    - ENT6
+    - ENN6
+  - - INCX
+    - DECX
+    - ENTX
+    - ENNX
+  - - CMPA
+    - FCMP
+  - CMP1
+  - CMP2
+  - CMP3
+  - CMP4
+  - CMP5
+  - CMP6
+  - CMPX
