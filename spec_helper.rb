@@ -1,8 +1,4 @@
 require 'simplecov'
-require 'simplecov-gem-adapter'
-SimpleCov.start 'gem' do
-  @filters = []
+SimpleCov.start do
   add_filter('spec/')
-  add_filter('/var/lib')
-
 end
