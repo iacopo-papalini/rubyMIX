@@ -3,7 +3,7 @@ require 'rspec'
 require 'mix_core'
 require 'register'
 require 'word'
-require 'Assembler'
+require 'assembler'
 
 describe 'Correctly implements loading Operations' do
   before(:each) do
