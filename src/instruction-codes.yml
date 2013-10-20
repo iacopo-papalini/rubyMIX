@@ -1,5 +1,5 @@
 Instructions:
-  - - NOP
+  - - NOP    # This way the default F for NOP is 0
   - ADD
   - SUB
   - MUL

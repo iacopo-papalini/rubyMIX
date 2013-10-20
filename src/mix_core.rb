@@ -113,18 +113,30 @@ class MixCore
     _, f = extract_op_code_and_modifier(instruction)
     address = calculate_modified_address(instruction)
 
-    skip = should_perform_jump_operation(f) ? false : true
+    skip = should_perform_jump(f) ? false : true
 
     return if skip
-    perform_jump(address, f != 1) # since ip gets increased every clock
+    perform_jump(address, f != Instructions::F_JSJ)
   end
+
+  def jump_check_register(instruction)
+    op_code, f = extract_op_code_and_modifier(instruction)
+    register = select_register_from_op_code(op_code, Instructions::OP_JAN)
+    address = calculate_modified_address(instruction)
+
+    perform = should_perform_jump_register(f, register)
+
+    return if !perform
+    perform_jump address, true
+  end
+
 
   def perform_jump(address, update_rj)
     @rj.store_long(@ip + 1) if update_rj
-    @ip = address - 1
+    @ip = address - 1  # since ip gets increased every clock
   end
 
-  def should_perform_jump_operation(f)
+  def should_perform_jump(f)
     return false if (f == Instructions::F_JOV and @overflow == false)
     return false if (f == Instructions::F_JNOV and @overflow == true)
     return false if (f == Instructions::F_JL and !less)
@@ -137,6 +149,13 @@ class MixCore
     true
   end
 
+
+  def should_perform_jump_register(f, register)
+    return false if f == Instructions::F_JAN and register.long >= 0
+    return false if f == Instructions::F_JAZ and register.long != 0
+    return false if f == Instructions::F_JAP and register.long <= 0
+    return true
+  end
 
   # Maps all operations that copy a value directly from the instruction to a register, without reading it from the memory
   # i.e.  INC?, DEC?, ENT?, ENN?

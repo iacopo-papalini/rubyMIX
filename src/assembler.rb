@@ -14,7 +14,7 @@ class Assembler
     raise if parts == nil
     op_code = Instructions::OPERATION[parts['OP']]
     f = Instructions::F_VALUE[parts['OP']]
-    f = extract_f parts, f if f == nil or parts['Fl'] != nil
+    f = extract_f parts if f == nil or parts['Fl'] != nil
     i = extract_i parts
 
     sign = extract_sign parts
@@ -35,7 +35,7 @@ class Assembler
     parts['SIGN'] != '-' ? Sign::POSITIVE : Sign::NEGATIVE
   end
 
-  def extract_f(parts, f)
+  def extract_f(parts)
     parts['Fl'] != nil ? 8* parts['Fl'].to_i + parts['Fr'].to_i : DEFAULT_F
   end
 
