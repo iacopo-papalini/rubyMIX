@@ -25,8 +25,8 @@ class MixCore
     @rj = Register::Jump.new
     @ri = Array.new(6, Register::Small.new)
     @eq = @gt = @lt = @overflow = false
-    @memory = Array.new(4000)
-    (0..3999).each do |i|
+    @memory = Array.new(Limits::MEMORY_SIZE)
+    Limits::MEMORY_SIZE.times do |i|
       @memory[i] = Word.new
     end
     @ip = 0
@@ -37,7 +37,7 @@ class MixCore
     (Instructions::OP_STA..Instructions::OP_STJ).each { |op_code| @instruction_to_function[op_code] = 'store_register' }
     @instruction_to_function[Instructions::OP_STZ] = 'clean_memory'
     @instruction_to_function[Instructions::OP_JMP] = 'jump'
-
+    (Instructions::OP_JAN..Instructions::OP_JXNP).each { |op_code| @instruction_to_function[op_code] = 'jump_check_register' }
     (Instructions::OP_ENTA..Instructions::OP_ENTX).each { |op_code| @instruction_to_function[op_code] = 'write_in_register' }
   end
 
@@ -130,6 +130,9 @@ class MixCore
     return false if (f == Instructions::F_JL and !less)
     return false if (f == Instructions::F_JE and !equal)
     return false if (f == Instructions::F_JG and !greater)
+    return false if (f == Instructions::F_JGE and !greater_or_equal)
+    return false if (f == Instructions::F_JNE and equal)
+    return false if (f == Instructions::F_JLE and !lesser_or_equal)
 
     true
   end
@@ -195,6 +198,7 @@ class MixCore
   def equal
     [@lt, @eq, @gt] == [false, true, false]
   end
+
   def greater
     [@lt, @eq, @gt] == [false, false, true]
   end
@@ -202,4 +206,9 @@ class MixCore
   def greater_or_equal
     (@eq or @gt) and not @lt
   end
+
+  def lesser_or_equal
+    (@eq or @lt) and not @gt
+  end
+
 end

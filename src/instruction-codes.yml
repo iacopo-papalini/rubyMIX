@@ -61,13 +61,48 @@ Instructions:
     - JANN
     - JANZ
     - JANP
-  - J1
-  - J2
-  - J3
-  - J4
-  - J5
-  - J6
-  - JX
+  - - J1N
+    - J1Z
+    - J1P
+    - J1NN
+    - J1NZ
+    - J1NP
+  - - J2N
+    - J2Z
+    - J2P
+    - J2NN
+    - J2NZ
+    - J2NP
+  - - J3N
+    - J3Z
+    - J3P
+    - J3NN
+    - J3NZ
+    - J3NP   
+  - - J4N
+    - J4Z
+    - J4P
+    - J4NN
+    - J4NZ
+    - J4NP     
+  - - J5N
+    - J5Z
+    - J5P
+    - J5NN
+    - J5NZ
+    - J5NP
+  - - J6N
+    - J6Z
+    - J6P
+    - J6NN
+    - J6NZ
+    - J6NP
+  - - JXN
+    - JXZ
+    - JXP
+    - JXNN
+    - JXNZ
+    - JXNP
   - - INCA
     - DECA
     - ENTA

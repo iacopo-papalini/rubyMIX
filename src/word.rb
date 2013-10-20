@@ -3,6 +3,7 @@ module Limits
   BYTES_IN_WORD = 5
   BYTE = 2 ** (BITS_IN_BYTE) - 1
   MAX_INT = 2 ** (BITS_IN_BYTE * BYTES_IN_WORD) - 1
+  MEMORY_SIZE = 4000
 end
 module Sign
   POSITIVE = 1

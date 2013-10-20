@@ -5,6 +5,7 @@ require 'mix_core'
 require 'register'
 require 'word'
 require 'assembler'
+require 'instructions'
 
 def assert_not_jumped_and_reset_ip
   @testing.rj.long.should eq 0
@@ -116,6 +117,55 @@ describe 'Correctly implements jump Operations' do
 
     @testing.eq = false
 
+    @testing.clock
+
+    assert_jumped @address
+  end
+
+  it 'should correctly perform a Jump if greater or equals' do
+    @testing.change_memory_word(@ip, @assembler.as_word('JGE %d' %@address))
+    @testing.eq = false
+
+    @testing.clock
+
+    assert_not_jumped_and_reset_ip
+
+    @testing.eq = true
+
+    @testing.clock
+
+    assert_jumped @address
+  end
+
+  it 'should correctly perform a Jump if not equals' do
+    @testing.change_memory_word(@ip, @assembler.as_word('JNE %d' %@address))
+    @testing.eq = true
+    @testing.gt = false
+    @testing.lt = false
+
+    @testing.clock
+
+    assert_not_jumped_and_reset_ip
+
+    @testing.eq = true
+    @testing.lt = true
+    @testing.clock
+
+    assert_jumped @address
+  end
+
+  it 'should correctly perform a Jump if lesser or equals' do
+    @testing.change_memory_word(@ip, @assembler.as_word('JLE %d' %@address))
+    @testing.eq = false
+    @testing.gt = false
+    @testing.lt = false
+
+    @testing.clock
+
+    assert_not_jumped_and_reset_ip
+
+    @testing.eq = true
+    @testing.lt = true
     @testing.clock
 
     assert_jumped @address
