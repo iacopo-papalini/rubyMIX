@@ -4,6 +4,11 @@ require 'mix_core'
 require 'word'
 require 'assembler'
 require 'register'
+require 'assembly_descriptor_generator'
+
+
+gen = AssemblyDescriptorGenerator.new File.dirname(__FILE__) + '/instruction-codes.yml'
+
 
 program = [
     'ENT1 100',

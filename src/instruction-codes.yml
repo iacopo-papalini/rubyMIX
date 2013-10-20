@@ -1,4 +1,4 @@
-instructions:
+Instructions:
   - - NOP
   - ADD
   - SUB
@@ -49,7 +49,18 @@ instructions:
     - JSJ
     - JOV
     - JNOV
-  - JA
+    - JL
+    - JE
+    - JG
+    - JGE
+    - JNE
+    - JLE
+  - - JAN
+    - JAZ
+    - JAP
+    - JANN
+    - JANZ
+    - JANP
   - J1
   - J2
   - J3

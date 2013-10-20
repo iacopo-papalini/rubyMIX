@@ -1,9 +1,12 @@
 $:.unshift (File.dirname(__FILE__) + '/../../src/')
+$:.unshift (File.dirname(__FILE__) + '/../../generated/')
 require 'rspec'
 require 'mix_core'
 require 'register'
 require 'word'
+require 'instructions'
 require 'assembler'
+
 
 describe 'Correctly implements storing Operations' do
   before(:each) do

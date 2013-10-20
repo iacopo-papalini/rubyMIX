@@ -1,4 +1,5 @@
 $:.unshift (File.dirname(__FILE__) + '/../../src/')
+$:.unshift (File.dirname(__FILE__) + '/../../generated/')
 require 'rspec'
 require 'mix_core'
 require 'register'
