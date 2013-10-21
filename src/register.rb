@@ -4,7 +4,7 @@ module Register
   class Register
     attr_reader :size
     attr_reader :bytes
-    attr_reader :sign
+    attr_accessor :sign
     include WordFunctions
 
     def initialize(size)

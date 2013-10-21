@@ -84,7 +84,7 @@ end
 
 class Word
   attr_reader :bytes
-  attr_reader :sign
+  attr_accessor :sign
   include WordFunctions
 
   def initialize(sign = Sign::POSITIVE, bytes = [0, 0, 0, 0, 0])

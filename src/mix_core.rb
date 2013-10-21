@@ -33,6 +33,7 @@ class MixCore
 
     @instruction_to_function = {0 => 'nop'}
     (Instructions::OP_ADD..Instructions::OP_SUB).each { |op_code| @instruction_to_function[op_code] = 'add_or_sub' }
+    @instruction_to_function[Instructions::OP_MUL] = 'mul'
     (Instructions::OP_LDA..Instructions::OP_LDXN).each { |op_code| @instruction_to_function[op_code] = 'load_in_register' }
     (Instructions::OP_STA..Instructions::OP_STJ).each { |op_code| @instruction_to_function[op_code] = 'store_register' }
     @instruction_to_function[Instructions::OP_STZ] = 'clean_memory'
@@ -78,6 +79,18 @@ class MixCore
     abs = tmp.abs
     @overflow = true if abs > Limits::MAX_INT
     @ra.store_long(sign * (abs % Limits::MAX_INT))
+  end
+
+  def mul(instruction)
+    op_code, f = extract_op_code_and_modifier(instruction)
+    word = extract_word_from_memory(instruction)
+    left, right = explode_f(f)
+    tmp = @ra.long * word.long(left, right)
+    sign = tmp < 0 ? Sign::NEGATIVE : Sign::POSITIVE
+    tmp = tmp.abs
+    @ra.store_long(tmp >> (Limits::BYTES_IN_WORD * Limits::BITS_IN_BYTE))
+    @rx.store_long(tmp % (Limits::MAX_INT + 1))
+    @ra.sign = @rx.sign = sign
   end
 
   # Loads the contents of a memory cell in a register (negates  if needed)
