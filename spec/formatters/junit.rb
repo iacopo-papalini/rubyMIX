@@ -35,6 +35,7 @@ require 'time'
 require 'builder'
 require 'rspec/core/formatters/base_formatter'
 
+#noinspection ALL
 class JUnit < RSpec::Core::Formatters::BaseFormatter
   def initialize output
     super output

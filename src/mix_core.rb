@@ -154,7 +154,10 @@ class MixCore
     return false if f == Instructions::F_JAN and register.long >= 0
     return false if f == Instructions::F_JAZ and register.long != 0
     return false if f == Instructions::F_JAP and register.long <= 0
-    return true
+    return false if f == Instructions::F_JANN and register.long < 0
+    return false if f == Instructions::F_JANZ and register.long == 0
+    return false if f == Instructions::F_JANP and register.long > 0
+    true
   end
 
   # Maps all operations that copy a value directly from the instruction to a register, without reading it from the memory

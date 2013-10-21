@@ -25,8 +25,8 @@ describe 'Correctly implements jump Operations that check register values' do
     @assembler = Assembler.new
     @address = 2500
     @shift = 3
-    @ip = 100;
-    @testing.ip = @ip;
+    @ip = 100
+    @testing.ip = @ip
     @testing.ri[0].store_long(@shift)
   end
 
@@ -64,6 +64,39 @@ describe 'Correctly implements jump Operations that check register values' do
     assert_not_jumped_and_reset_ip
 
     @testing.ri[1].store_long(1)
+    @testing.clock
+    assert_jumped @address
+  end
+
+  it 'should correctly perform a jump if A not negative conditional Jump' do
+    @testing.change_memory_word(@ip, @assembler.as_word('JANN %d' %@address))
+    @testing.ra.store_long(-1)
+    @testing.clock
+    assert_not_jumped_and_reset_ip
+
+    @testing.ra.store_long(0)
+    @testing.clock
+    assert_jumped @address
+  end
+
+  it 'should correctly perform a jump if A not zero conditional Jump' do
+    @testing.change_memory_word(@ip, @assembler.as_word('JANZ %d' %@address))
+    @testing.ra.store_long(0)
+    @testing.clock
+    assert_not_jumped_and_reset_ip
+
+    @testing.ra.store_long(-1)
+    @testing.clock
+    assert_jumped @address
+  end
+
+  it 'should correctly perform a jump if A not positive conditional Jump' do
+    @testing.change_memory_word(@ip, @assembler.as_word('JANP %d' %@address))
+    @testing.ra.store_long(1)
+    @testing.clock
+    assert_not_jumped_and_reset_ip
+
+    @testing.ra.store_long(0)
     @testing.clock
     assert_jumped @address
   end

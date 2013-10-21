@@ -25,8 +25,8 @@ describe 'Correctly implements jump Operations' do
     @assembler = Assembler.new
     @address = 2500
     @shift = 3
-    @ip = 100;
-    @testing.ip = @ip;
+    @ip = 100
+    @testing.ip = @ip
     @testing.ri[0].store_long(@shift)
   end
 
