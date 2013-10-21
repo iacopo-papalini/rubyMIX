@@ -13,6 +13,7 @@ class MixCore
   attr_reader :memory
   attr_accessor :overflow
   attr_accessor :ip
+  attr_reader :halt
 
   INC = 0
   DEC = 1
@@ -23,8 +24,11 @@ class MixCore
     @ra = Register::Big.new
     @rx = Register::Big.new
     @rj = Register::Jump.new
-    @ri = Array.new(6, Register::Small.new)
-    @eq = @gt = @lt = @overflow = false
+    @ri = Array.new(6)
+    @ri.length.times do |i|
+      @ri[i] = Register::Small.new
+    end
+    @eq = @gt = @lt = @overflow = @halt = false
     @memory = Array.new(Limits::MEMORY_SIZE)
     Limits::MEMORY_SIZE.times do |i|
       @memory[i] = Word.new
@@ -34,6 +38,7 @@ class MixCore
     @instruction_to_function = {0 => 'nop'}
     (Instructions::OP_ADD..Instructions::OP_SUB).each { |op_code| @instruction_to_function[op_code] = 'add_or_sub' }
     @instruction_to_function[Instructions::OP_MUL] = 'mul'
+    @instruction_to_function[Instructions::OP_HLT] = 'generic_operation'
     (Instructions::OP_LDA..Instructions::OP_LDXN).each { |op_code| @instruction_to_function[op_code] = 'load_in_register' }
     (Instructions::OP_STA..Instructions::OP_STJ).each { |op_code| @instruction_to_function[op_code] = 'store_register' }
     @instruction_to_function[Instructions::OP_STZ] = 'clean_memory'
@@ -53,7 +58,7 @@ class MixCore
     end
     send(function_name, instruction)
 
-    @ip = (@ip + 1) % @memory.size
+    @ip = (@ip + 1) % @memory.size  if not @halt
   end
 
   def extract_op_code_and_modifier(instruction)
@@ -82,7 +87,7 @@ class MixCore
   end
 
   def mul(instruction)
-    op_code, f = extract_op_code_and_modifier(instruction)
+    _, f = extract_op_code_and_modifier(instruction)
     word = extract_word_from_memory(instruction)
     left, right = explode_f(f)
     tmp = @ra.long * word.long(left, right)
@@ -93,6 +98,15 @@ class MixCore
     @ra.sign = @rx.sign = sign
   end
 
+  def generic_operation(instruction)
+    _, f = extract_op_code_and_modifier(instruction)
+    if f == Instructions::F_HLT
+      @halt = true
+      @ip = nil
+      return
+    end
+
+  end
   # Loads the contents of a memory cell in a register (negates  if needed)
   def load_in_register (instruction)
     op_code, f = extract_op_code_and_modifier(instruction)

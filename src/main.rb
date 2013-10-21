@@ -1,30 +1,37 @@
 $:.unshift (File.dirname(__FILE__))
+$:.unshift (File.dirname(__FILE__) + '/../generated/')
 
 require 'mix_core'
 require 'word'
 require 'assembler'
 require 'register'
-
-
-
-program = [
-    'ENT1 100',
-    'ENTA 200',
-    'INCA 1,1']
+require 'instructions'
 
 assembler = Assembler.new
 mix = MixCore.new
-base = 3000
-program.each_with_index do |line, i|
-  command = assembler.as_word(line)
-  mix.change_memory_word(base + i, command)
+program = File.dirname(__FILE__) + '/../examples/1-fibonacci.mix'
+
+i = 0
+File.open(program, 'r') do |file_handle|
+     file_handle.each_line do |line|
+       if line[0] == '#'
+         next
+       end
+       command = assembler.as_word(line)
+       mix.change_memory_word(i, command)
+       i += 1
+     end
 end
 
-mix.ip = base
 
-program.each do
+mix.ip = 0
+
+while !mix.halt do
   mix.clock
+  break if mix.overflow
 end
 
-print ' ' << mix.ra.long.to_s << "\n"
-
+(3000..3030).each do |i|
+  print mix.memory[i].long.to_s << ' '
+end
+print "\n"

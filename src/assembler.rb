@@ -5,13 +5,13 @@ class Assembler
 
   def initialize
     # See The Art Of Computer Programming V.1 pag 128
-    @regexp = /^(?<OP>[A-Z][A-Z0-9]+)\s*(((?<SIGN>[-])?(?<ADDRESS>[0-9]{1,4}))?(,(?<I>[0-9]))?(\(((?<Fl>([0-5])):(?<Fr>[0-9])?)\))?)?$/
+    @regexp = /^(?<OP>[A-Z][A-Z0-9]+)\s*(((?<SIGN>[-])?(?<ADDRESS>[0-9]{1,4}))?(,(?<I>[0-9]))?(\(((?<Fl>([0-5])):(?<Fr>[0-9])?)\))?)?\s*(#(?<Comment>.*)\s+)?$/
   end
 
 
   def as_word(line)
     parts = @regexp.match line
-    raise if parts == nil
+    raise("Invalid line: #{line}") if parts == nil
     op_code = Instructions::OPERATION[parts['OP']]
     f = Instructions::F_VALUE[parts['OP']]
     f = extract_f parts if f == nil or parts['Fl'] != nil

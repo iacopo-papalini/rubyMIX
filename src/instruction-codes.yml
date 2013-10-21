@@ -4,7 +4,9 @@ Instructions:
   - SUB
   - MUL
   - DIV
-  - NUM
+  - - NUM
+    - CHAR
+    - HLT
   - - SLA
     - SRA
     - SLAX
