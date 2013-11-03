@@ -4,7 +4,7 @@ RSpec::Core::RakeTask.new(:spec) do |t|
 
 end
 task :generate   do
-  require './src/assembly_descriptor_generator'
+  require './src/assembler/assembly_descriptor_generator'
   gen =  AssemblyDescriptorGenerator.new './src/instruction-codes.yml'
   generated_dir = './generated'
   Dir.mkdir(generated_dir)   if not File.exist? generated_dir

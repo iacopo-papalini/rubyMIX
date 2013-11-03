@@ -7,7 +7,7 @@ require 'assembler'
 require 'register'
 require 'instructions'
 
-assembler = Assembler.new
+assembler = InstructionParser.new
 mix = MixCore.new
 program = File.dirname(__FILE__) + '/../examples/1-fibonacci.mix'
 
