@@ -5,13 +5,13 @@ require 'mix_core'
 require 'register'
 require 'word'
 require 'instructions'
-require 'assembler'
+require 'assembler/instruction_parser'
 
 
 describe 'Correctly implements various Operations' do
   before(:each) do
     @testing = MixCore.new
-    @assembler = Assembler.new
+    @instruction_parser = InstructionParser.new
     @address = 2500
     @register_word = Word.new([6, 7, 8, 9, 0])
     @testing.memory[@address].load_value(Word.new(Sign::NEGATIVE, [1, 2, 3, 4, 5]))
@@ -19,7 +19,7 @@ describe 'Correctly implements various Operations' do
   end
 
   it 'should correctly halt' do
-    @testing.change_memory_word(@testing.ip, @assembler.as_word('HLT'))
+    @testing.change_memory_word(@testing.ip, @instruction_parser.as_word('HLT'))
 
     @testing.clock
 

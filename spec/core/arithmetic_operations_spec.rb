@@ -4,13 +4,14 @@ require 'rspec'
 require 'mix_core'
 require 'register'
 require 'word'
-require 'assembler'
+require 'assembler/instruction_parser'
 require 'instructions'
 
 describe 'Correctly implements arithmetic Operations' do
   before(:each) do
     @testing = MixCore.new
-    @assembler = Assembler.new
+    @instruction_parser = InstructionParser.new
+    @instruction_parser.expression_evaluator =  ExpressionParser.new(nil)
     @address = 2500
     @fix_num = -65 # [0,0,0,1,1]
     @register_value = 18000000
@@ -21,14 +22,14 @@ describe 'Correctly implements arithmetic Operations' do
   end
 
   it 'should add the value of the memory cell to rA' do
-    @testing.change_memory_word(@testing.ip, @assembler.as_word('ADD %d' % @address))
+    @testing.change_memory_word(@testing.ip, @instruction_parser.as_word('ADD %d' % @address))
 
     @testing.clock
 
     @testing.ra.long.should eq @register_value+@fix_num
   end
   it 'should add the partial value of the memory cell to rA' do
-    @testing.change_memory_word(@testing.ip, @assembler.as_word('ADD %d(5:5)' % @address))
+    @testing.change_memory_word(@testing.ip, @instruction_parser.as_word('ADD %d(5:5)' % @address))
 
     @testing.clock
 
@@ -37,7 +38,7 @@ describe 'Correctly implements arithmetic Operations' do
 
   it 'should handle the overflow' do
     @testing.change_memory_word(@address, Word.new.store_long(Limits::MAX_INT - 1))
-    @testing.change_memory_word(@testing.ip, @assembler.as_word('ADD %d' % @address))
+    @testing.change_memory_word(@testing.ip, @instruction_parser.as_word('ADD %d' % @address))
 
     @testing.clock
 
@@ -48,7 +49,7 @@ describe 'Correctly implements arithmetic Operations' do
   it 'should handle the underflow' do
     @testing.ra.store_long(-@register_value)
     @testing.change_memory_word(@address, Word.new.store_long(-Limits::MAX_INT + 1))
-    @testing.change_memory_word(@testing.ip, @assembler.as_word('ADD %d' % @address))
+    @testing.change_memory_word(@testing.ip, @instruction_parser.as_word('ADD %d' % @address))
     @testing.overflow.should eq false
     @testing.clock
 
@@ -57,7 +58,7 @@ describe 'Correctly implements arithmetic Operations' do
   end
 
   it 'should subtract the value of the memory cell to rA' do
-    @testing.change_memory_word(@testing.ip, @assembler.as_word('SUB %d' % @address))
+    @testing.change_memory_word(@testing.ip, @instruction_parser.as_word('SUB %d' % @address))
 
     @testing.clock
 
@@ -68,7 +69,7 @@ describe 'Correctly implements arithmetic Operations' do
   it 'should multiply the value of the memory cell times rA, as in first example of The Art of Computer Programming v.1 pag 132' do
     @testing.ra.load_value(Word.new([1, 1, 1, 1, 1]))
     @testing.change_memory_word(@address, Word.new([1, 1, 1, 1, 1]))
-    @testing.change_memory_word(@testing.ip, @assembler.as_word('MUL %d' % @address))
+    @testing.change_memory_word(@testing.ip, @instruction_parser.as_word('MUL %d' % @address))
 
     @testing.clock
 
@@ -79,7 +80,7 @@ describe 'Correctly implements arithmetic Operations' do
   it 'should multiply the value of the memory cell times rA, as in second example of The Art of Computer Programming v.1 pag 132' do
     @testing.ra.store_long(-112)
     @testing.change_memory_word(@address, Word.new([2, 3, 4, 5, 6]))
-    @testing.change_memory_word(@testing.ip, @assembler.as_word('MUL %d(1:1)' % @address))
+    @testing.change_memory_word(@testing.ip, @instruction_parser.as_word('MUL %d(1:1)' % @address))
 
     @testing.clock
 
@@ -91,7 +92,7 @@ describe 'Correctly implements arithmetic Operations' do
   it 'should multiply the value of the memory cell times rA, as in third example of The Art of Computer Programming v.1 pag 132' do
     @testing.ra.load_value( Word.new(Sign::NEGATIVE,[50, 0, 1, 48, 4]))
     @testing.change_memory_word(@address, Word.new(Sign::NEGATIVE, [2, 0, 0, 0, 0]))
-    @testing.change_memory_word(@testing.ip, @assembler.as_word('MUL %d' % @address))
+    @testing.change_memory_word(@testing.ip, @instruction_parser.as_word('MUL %d' % @address))
 
     @testing.clock
 

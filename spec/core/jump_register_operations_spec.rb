@@ -4,7 +4,8 @@ require 'rspec'
 require 'mix_core'
 require 'register'
 require 'word'
-require 'assembler'
+require 'assembler/instruction_parser'
+require 'assembler/expression_parser'
 require 'instructions'
 
 def assert_not_jumped_and_reset_ip
@@ -22,7 +23,8 @@ end
 describe 'Correctly implements jump Operations that check register values' do
   before(:each) do
     @testing = MixCore.new
-    @assembler = Assembler.new
+    @instruction_parser = InstructionParser.new
+    @instruction_parser.expression_evaluator = ExpressionParser.new(nil)
     @address = 2500
     @shift = 3
     @ip = 100
@@ -31,7 +33,7 @@ describe 'Correctly implements jump Operations that check register values' do
   end
 
   it 'should correctly perform a jump if A negative conditional Jump' do
-    @testing.change_memory_word(@ip, @assembler.as_word('JAN %d,1' %@address))
+    @testing.change_memory_word(@ip, @instruction_parser.as_word('JAN %d,1' %@address))
     @testing.clock
     assert_not_jumped_and_reset_ip
 
@@ -42,7 +44,7 @@ describe 'Correctly implements jump Operations that check register values' do
   end
 
   it 'should correctly perform a jump if I1 zero conditional Jump' do
-    @testing.change_memory_word(@ip, @assembler.as_word('J1Z %d' %@address))
+    @testing.change_memory_word(@ip, @instruction_parser.as_word('J1Z %d' %@address))
     @testing.ri[0].store_long(1)
     @testing.clock
     assert_not_jumped_and_reset_ip
@@ -54,7 +56,7 @@ describe 'Correctly implements jump Operations that check register values' do
   end
 
   it 'should correctly perform a jump if I2 positive conditional Jump' do
-    @testing.change_memory_word(@ip, @assembler.as_word('J2P %d' %@address))
+    @testing.change_memory_word(@ip, @instruction_parser.as_word('J2P %d' %@address))
     @testing.ri[1].store_long(-1)
     @testing.clock
     assert_not_jumped_and_reset_ip
@@ -69,7 +71,7 @@ describe 'Correctly implements jump Operations that check register values' do
   end
 
   it 'should correctly perform a jump if A not negative conditional Jump' do
-    @testing.change_memory_word(@ip, @assembler.as_word('JANN %d' %@address))
+    @testing.change_memory_word(@ip, @instruction_parser.as_word('JANN %d' %@address))
     @testing.ra.store_long(-1)
     @testing.clock
     assert_not_jumped_and_reset_ip
@@ -80,7 +82,7 @@ describe 'Correctly implements jump Operations that check register values' do
   end
 
   it 'should correctly perform a jump if A not zero conditional Jump' do
-    @testing.change_memory_word(@ip, @assembler.as_word('JANZ %d' %@address))
+    @testing.change_memory_word(@ip, @instruction_parser.as_word('JANZ %d' %@address))
     @testing.ra.store_long(0)
     @testing.clock
     assert_not_jumped_and_reset_ip
@@ -91,7 +93,7 @@ describe 'Correctly implements jump Operations that check register values' do
   end
 
   it 'should correctly perform a jump if A not positive conditional Jump' do
-    @testing.change_memory_word(@ip, @assembler.as_word('JANP %d' %@address))
+    @testing.change_memory_word(@ip, @instruction_parser.as_word('JANP %d' %@address))
     @testing.ra.store_long(1)
     @testing.clock
     assert_not_jumped_and_reset_ip

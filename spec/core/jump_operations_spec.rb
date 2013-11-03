@@ -4,7 +4,8 @@ require 'rspec'
 require 'mix_core'
 require 'register'
 require 'word'
-require 'assembler'
+require 'assembler/instruction_parser'
+require 'assembler/expression_parser'
 require 'instructions'
 
 def assert_not_jumped_and_reset_ip
@@ -22,7 +23,8 @@ end
 describe 'Correctly implements jump Operations' do
   before(:each) do
     @testing = MixCore.new
-    @assembler = Assembler.new
+    @instruction_parser = InstructionParser.new
+    @instruction_parser.expression_evaluator = ExpressionParser.new(nil)
     @address = 2500
     @shift = 3
     @ip = 100
@@ -31,7 +33,7 @@ describe 'Correctly implements jump Operations' do
   end
 
   it 'should correctly perform a non conditional Jump' do
-    @testing.change_memory_word(@ip, @assembler.as_word('JMP %d,1' %@address))
+    @testing.change_memory_word(@ip, @instruction_parser.as_word('JMP %d,1' %@address))
 
     @testing.clock
 
@@ -39,7 +41,7 @@ describe 'Correctly implements jump Operations' do
   end
 
   it 'should correctly perform a jump saving J' do
-    @testing.change_memory_word(@ip, @assembler.as_word('JSJ %d' %@address))
+    @testing.change_memory_word(@ip, @instruction_parser.as_word('JSJ %d' %@address))
 
     @testing.clock
 
@@ -48,7 +50,7 @@ describe 'Correctly implements jump Operations' do
   end
 
   it 'should correctly perform an overflow-conditioned Jump' do
-    @testing.change_memory_word(@ip, @assembler.as_word('JOV %d' %@address))
+    @testing.change_memory_word(@ip, @instruction_parser.as_word('JOV %d' %@address))
 
     @testing.clock
 
@@ -63,7 +65,7 @@ describe 'Correctly implements jump Operations' do
   end
 
   it 'should correctly perform a not-overflow-conditioned Jump' do
-    @testing.change_memory_word(@ip, @assembler.as_word('JNOV %d' %@address))
+    @testing.change_memory_word(@ip, @instruction_parser.as_word('JNOV %d' %@address))
     @testing.overflow = true
 
     @testing.clock
@@ -78,7 +80,7 @@ describe 'Correctly implements jump Operations' do
   end
 
   it 'should correctly perform a Jump if less' do
-    @testing.change_memory_word(@ip, @assembler.as_word('JL %d' %@address))
+    @testing.change_memory_word(@ip, @instruction_parser.as_word('JL %d' %@address))
     @testing.clock
 
     assert_not_jumped_and_reset_ip
@@ -91,7 +93,7 @@ describe 'Correctly implements jump Operations' do
   end
 
   it 'should correctly perform a Jump if equal' do
-    @testing.change_memory_word(@ip, @assembler.as_word('JE %d' %@address))
+    @testing.change_memory_word(@ip, @instruction_parser.as_word('JE %d' %@address))
     @testing.eq = true
     @testing.gt = true
 
@@ -107,7 +109,7 @@ describe 'Correctly implements jump Operations' do
   end
 
   it 'should correctly perform a Jump if greater' do
-    @testing.change_memory_word(@ip, @assembler.as_word('JG %d' %@address))
+    @testing.change_memory_word(@ip, @instruction_parser.as_word('JG %d' %@address))
     @testing.eq = true
     @testing.gt = true
 
@@ -123,7 +125,7 @@ describe 'Correctly implements jump Operations' do
   end
 
   it 'should correctly perform a Jump if greater or equals' do
-    @testing.change_memory_word(@ip, @assembler.as_word('JGE %d' %@address))
+    @testing.change_memory_word(@ip, @instruction_parser.as_word('JGE %d' %@address))
     @testing.eq = false
 
     @testing.clock
@@ -138,7 +140,7 @@ describe 'Correctly implements jump Operations' do
   end
 
   it 'should correctly perform a Jump if not equals' do
-    @testing.change_memory_word(@ip, @assembler.as_word('JNE %d' %@address))
+    @testing.change_memory_word(@ip, @instruction_parser.as_word('JNE %d' %@address))
     @testing.eq = true
     @testing.gt = false
     @testing.lt = false
@@ -155,7 +157,7 @@ describe 'Correctly implements jump Operations' do
   end
 
   it 'should correctly perform a Jump if lesser or equals' do
-    @testing.change_memory_word(@ip, @assembler.as_word('JLE %d' %@address))
+    @testing.change_memory_word(@ip, @instruction_parser.as_word('JLE %d' %@address))
     @testing.eq = false
     @testing.gt = false
     @testing.lt = false
