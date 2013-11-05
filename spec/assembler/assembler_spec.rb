@@ -41,7 +41,7 @@ describe 'Convert an assembly program and store in memory' do
   end
 
   #noinspection RubyResolve
-  it 'should correctly resolve symbolics addresses' do
+  it 'should correctly resolve symbolics addresses' , :broken => true do
     @assembler.parse_line ' ORIG 3000'
     @assembler.parse_line 'TEST NOP'
     @assembler.parse_line ' JMP TEST+5'
