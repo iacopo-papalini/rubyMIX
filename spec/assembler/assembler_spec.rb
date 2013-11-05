@@ -6,6 +6,11 @@ require 'assembler/instruction_parser'
 require 'assembler/assembler'
 require 'instructions'
 
+RSpec.configure do |c|
+  # declare an exclusion filter
+  c.filter_run_excluding :broken => true
+end
+
 describe 'Convert an assembly program and store in memory' do
   before(:each) do
     @assembler = Assembler.new
