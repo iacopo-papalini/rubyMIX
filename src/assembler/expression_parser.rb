@@ -35,7 +35,7 @@ class ExpressionParser
     string[0] == '-' ? '0' + string : string
   end
 
-  @@binary_operations = {
+  BINARY_OPERATIONS = {
       '+' => lambda{| x,y | x + y},
       '-' => lambda{| x,y | x - y},
       '*' => lambda{| x,y | x * y},
@@ -44,9 +44,9 @@ class ExpressionParser
       '//'=> lambda{ raise 'Operation not implemented' }
   }
   def evaluate_binary_operation(left, operation, right)
-    raise 'Unknown Operation ' + operation  if ! @@binary_operations.has_key? operation
+    raise 'Unknown Operation ' + operation  if ! BINARY_OPERATIONS.has_key? operation
 
-    @@binary_operations[operation].call(left, right)
+    BINARY_OPERATIONS[operation].call(left, right)
   end
 
 

@@ -26,7 +26,7 @@ end
 
 mix.ip = 0
 
-while !mix.halt do
+until mix.halt do
   mix.clock
   break if mix.overflow
 end

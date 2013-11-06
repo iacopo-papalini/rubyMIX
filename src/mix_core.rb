@@ -103,9 +103,7 @@ class MixCore
     if f == Instructions::F_HLT
       @halt = true
       @ip = nil
-      return
     end
-
   end
   # Loads the contents of a memory cell in a register (negates  if needed)
   def load_in_register (instruction)
