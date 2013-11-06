@@ -3,6 +3,7 @@ $:.unshift (File.dirname(__FILE__) + '/../../generated/')
 require 'rspec'
 require 'word'
 require 'assembler/instruction_parser'
+require 'assembler/expression_parser'
 require 'assembler/assembler'
 require 'instructions'
 
@@ -14,6 +15,8 @@ end
 describe 'Convert an assembly program and store in memory' do
   before(:each) do
     @assembler = Assembler.new
+    @instruction_parser = InstructionParser.new()
+    @instruction_parser.expression_evaluator = ExpressionParser.new(nil)
   end
 
   #noinspection RubyResolve
@@ -38,19 +41,53 @@ describe 'Convert an assembly program and store in memory' do
 
   #noinspection RubyResolve
   it 'should parse a line after the ORIG meta instruction and set its LOC as a global' do
-    @assembler.parse_line ' ORIG 3000'
-    @assembler.parse_line ' NOP'
-    @assembler.parse_line 'TEST NOP'
+    @assembler.parse_lines [' ORIG 3000', ' NOP', 'TEST NOP']
     @assembler.set_memory_locations.count.should eq 2
     @assembler.constants['TEST'].should eq 3001
   end
 
   #noinspection RubyResolve
-  it 'should correctly resolve symbolics addresses' , :broken => true do
-    @assembler.parse_line ' ORIG 3000'
-    @assembler.parse_line 'TEST NOP'
-    @assembler.parse_line ' JMP TEST+5'
-    fail('Check instruction parsing result')
-
+  it 'should correctly resolve symbolics addresses' do
+    @assembler.parse_lines [' ORIG 3000', 'TEST NOP', ' JMP TEST+5']
+    @assembler.set_memory_locations[3001].should eq @instruction_parser.as_word('JMP 3005')
   end
+
+  #noinspection RubyResolve
+  it 'should correctly parse many lines' do
+    lines = [' ORIG 3000', 'TEST NOP', ' JMP TEST+5']
+    @assembler.parse_lines lines
+    @assembler.set_memory_locations[3001].should eq @instruction_parser.as_word('JMP 3005')
+  end
+  #noinspection RubyResolve
+  it 'should correctly resolve a future reference' do
+    lines = [' ORIG 3000', ' JMP TEST+5', ' STA 1', ' STA 2', ' STA 3', ' STA 4', 'TEST STA 65', ' STA 5']
+    @assembler.parse_lines lines
+    @assembler.set_memory_locations[3000].should eq @instruction_parser.as_word('JMP 3010')
+    @assembler.set_memory_locations[3006].should eq @instruction_parser.as_word('STA 5')
+  end
+  #noinspection RubyResolve
+  it 'should correctly resolve two nested future references' do
+    lines = [' ORIG 3000', ' JMP TEST+5', ' STA 1', ' STA TEST2', 'TEST2 STA 3', ' STA 4', 'TEST STA 65', ' STA 5']
+    @assembler.parse_lines lines
+    @assembler.set_memory_locations[3000].should eq @instruction_parser.as_word('JMP 3010')
+    @assembler.set_memory_locations[3001].should eq @instruction_parser.as_word('STA 1')
+    @assembler.set_memory_locations[3002].should eq @instruction_parser.as_word('STA 3003')
+    @assembler.set_memory_locations[3003].should eq @instruction_parser.as_word('STA 3')
+    @assembler.set_memory_locations[3004].should eq @instruction_parser.as_word('STA 4')
+    @assembler.set_memory_locations[3005].should eq @instruction_parser.as_word('STA 65')
+    @assembler.set_memory_locations[3006].should eq @instruction_parser.as_word('STA 5')
+  end
+  #noinspection RubyResolve
+  it 'should correctly resolve two interleaved future references' do
+    lines = [' ORIG 3000', ' JMP TEST+5', ' STA 1', ' STA TEST2', 'TEST STA 3', ' STA 4', 'TEST2 STA 65', ' STA 5']
+    @assembler.parse_lines lines
+    @assembler.set_memory_locations[3000].should eq @instruction_parser.as_word('JMP 3008')
+    @assembler.set_memory_locations[3001].should eq @instruction_parser.as_word('STA 1')
+    @assembler.set_memory_locations[3002].should eq @instruction_parser.as_word('STA 3005')
+    @assembler.set_memory_locations[3003].should eq @instruction_parser.as_word('STA 3')
+    @assembler.set_memory_locations[3004].should eq @instruction_parser.as_word('STA 4')
+    @assembler.set_memory_locations[3005].should eq @instruction_parser.as_word('STA 65')
+    @assembler.set_memory_locations[3006].should eq @instruction_parser.as_word('STA 5')
+  end
+
 end

@@ -80,6 +80,9 @@ module WordFunctions
      self
   end
 
+  def to_s
+    self.class.to_s + ': ' + @sign.to_s + ' ' +@bytes.to_s
+  end
 end
 
 class Word
