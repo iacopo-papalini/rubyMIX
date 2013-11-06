@@ -5,11 +5,12 @@ A Ruby didactic implementation of the MIX Virtual Machine + MIXAL assembly langu
 
 
 Known issues
-============
+------------
 
-# Not all instructions implemented:
-    - missing floating point operation
-    - missing I?O operations
-    - missing Shift operations
+* Not all instructions implemented:
+    * missing floating point operation
+    * missing I?O operations
+    * missing Shift operations
 
-# Assembly format more relaxed than the original one (no fixed length fields)
+* Assembly format more relaxed than the original one (no fixed length fields)
+* Future references can be used inside arbitrary expressions, not only alone
