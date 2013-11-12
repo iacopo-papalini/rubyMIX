@@ -3,27 +3,19 @@ $:.unshift (File.dirname(__FILE__) + '/../generated/')
 
 require 'mix_core'
 require 'word'
-require 'assembler'
+require 'assembler/assembler'
+require 'assembler/instruction_parser'
+require 'assembler/expression_parser'
 require 'register'
 require 'instructions'
 
-assembler = InstructionParser.new
+assembler = Assembler.new
 mix = MixCore.new
 program = File.dirname(__FILE__) + '/../examples/1-fibonacci.mix'
 
-i = 0
-File.open(program, 'r') do |file_handle|
-     file_handle.each_line do |line|
-       if line[0] == '#'
-         next
-       end
-       command = assembler.as_word(line)
-       mix.change_memory_word(i, command)
-       i += 1
-     end
-end
 
-
+assembler.parse_lines File.open(program, 'r')
+assembler.load_cpu(mix)
 mix.ip = 0
 
 until mix.halt do

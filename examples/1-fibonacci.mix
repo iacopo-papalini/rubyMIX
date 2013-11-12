@@ -1,13 +1,12 @@
-# This is a simple program that computes the Fibonacci sequence
-# the first 30 numbers are computed, and are put in the 3000..3009 memory cells
-ENT1    29        # Initialize counters
-ENT2    0
-ENTA    1        # Accumulate 1
-STA     3000     # First value of sequence should be 0, setting 1 in order to init sequence
-ADD     2999,2   # Add accumulator with previous number
-INC2    1        # Increment sequence number
-STA     3000,2   # Store accumulated value
-DEC1    1
-J1NZ    4        # Close loop
-STZ     3000     # Reset to 0 first number of sequence
-HLT
+START   ENT1    29       # Initialize counters
+        ENT2    0
+        ENTA    1        # Accumulate 1
+        STA     3000     # First value of sequence should be 0, setting 1 in order to init sequence
+        ADD     2999,2   # Add accumulator with previous number
+        INC2    1        # Increment sequence number
+        STA     3000,2   # Store accumulated value
+        DEC1    1
+        J1NZ    4        # Close loop
+        STZ     3000     # Reset to 0 first number of sequence
+        HLT
+        END START

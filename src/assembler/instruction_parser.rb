@@ -79,6 +79,7 @@ class InstructionParser
   end
 
   def is_meta_instruction?(operation)
+    raise 'Operation %s not defined' % operation if not Instructions::OPERATION.has_key? operation
     Instructions::OPERATION[operation] >= Instructions::OP_EQU
   end
 

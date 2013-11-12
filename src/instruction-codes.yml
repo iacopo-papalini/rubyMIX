@@ -149,4 +149,5 @@ Instructions:
   # meta instructions
   - EQU
   - ORIG
+  - END
 

@@ -6,6 +6,8 @@ require 'assembler/instruction_parser'
 require 'assembler/expression_parser'
 require 'assembler/assembler'
 require 'instructions'
+require 'mix_core'
+require 'register'
 
 RSpec.configure do |c|
   # declare an exclusion filter
@@ -90,4 +92,21 @@ describe 'Convert an assembly program and store in memory' do
     @assembler.set_memory_locations[3006].should eq @instruction_parser.as_word('STA 5')
   end
 
+  #noinspection RubyResolve
+  it 'should correctly stop parsing with END' do
+    lines = [' ORIG 3000', 'START NOP', 'TEST NOP', ' JMP TEST+5', ' END START']
+    @assembler.parse_lines lines
+    @assembler.starting_ip.should eq 3000
+  end
+
+  #noinspection RubyResolve
+  it 'should initialize and run a MIX cpu' do
+    lines = [' ORIG 3000', 'START STA 1', 'TEST NOP', ' JMP TEST+5', ' END START']
+    @assembler.parse_lines lines
+
+    mix = MixCore.new
+    @assembler.load_cpu mix
+    mix.ip.should eq  3000
+    mix.memory[3000].should eq @instruction_parser.as_word('STA 1')
+  end
 end
