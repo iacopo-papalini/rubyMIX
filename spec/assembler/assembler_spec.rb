@@ -109,4 +109,5 @@ describe 'Convert an assembly program and store in memory' do
     mix.ip.should eq  3000
     mix.memory[3000].should eq @instruction_parser.as_word('STA 1')
   end
+
 end

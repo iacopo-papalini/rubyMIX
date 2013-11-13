@@ -16,8 +16,7 @@ program = File.dirname(__FILE__) + '/../examples/1-fibonacci.mix'
 
 assembler.parse_lines File.open(program, 'r')
 assembler.load_cpu(mix)
-mix.ip = 0
-
+print mix.ip.to_s + "\n"
 until mix.halt do
   mix.clock
   break if mix.overflow

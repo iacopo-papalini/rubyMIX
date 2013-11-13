@@ -21,6 +21,7 @@ class MixCore
   ENN = 3
 
   def initialize
+    @logger = Logger.new(STDOUT)
     @ra = Register::Big.new
     @rx = Register::Big.new
     @rj = Register::Jump.new
@@ -48,7 +49,7 @@ class MixCore
   end
 
   def clock
-    # @var Word
+    @logger.debug("Executing instruction at address %s" % @ip)
     instruction = @memory[@ip]
     op_code, _ = extract_op_code_and_modifier(instruction)
 
