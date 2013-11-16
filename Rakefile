@@ -11,7 +11,6 @@ task :generate   do
   file = File.open(generated_dir+'/instructions.rb', 'w')
   file.write gen.generate
   file.close
-
 end
 
 

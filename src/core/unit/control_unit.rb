@@ -4,13 +4,15 @@ class ControlUnit < AbstractUnit
   attr_accessor :halt
 
   def initialize(cpu)
+    # Just to let IntelliJ detect the field, otherwise it keeps complaining
+    @cpu = nil
     super(cpu)
     @rj = JumpRegister.new
     @ip = 0
   end
 
   def increase_ip
-    @ip = (@ip + 1) % @cpu.memory.size if not @halt
+    @ip = (@ip + 1) % @cpu.memory_size if not @halt
   end
 
   def jump(instruction)

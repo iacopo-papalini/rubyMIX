@@ -7,9 +7,10 @@ class AbstractUnit
   def extract_op_code_and_modifier(instruction)
     return instruction.bytes[4], instruction.bytes[3]
   end
+
   def extract_word_from_memory(instruction)
     modified_address = calculate_modified_address(instruction)
-    @cpu.memory[modified_address]
+    @cpu.mu.fetch(modified_address)
   end
 
   def calculate_modified_address(instruction)

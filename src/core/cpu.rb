@@ -6,11 +6,13 @@ class CPU
   attr_accessor :ra
   attr_accessor :rx
   attr_accessor :ri
-  attr_accessor :memory
   attr_accessor :disassembler
   attr_reader :alu
   attr_reader :cu
+  attr_reader :mu
 
+
+  CHARACTERS = " ABCDEFGHI?JKLMONPQR??STUVWXYZ0123456789.,()+-*/=$<>@;:'"
   INC = 0
   DEC = 1
   ENT = 2
@@ -24,19 +26,16 @@ class CPU
     @ri.length.times do |i|
       @ri[i] = ShortRegister.new
     end
-    @memory = Array.new(Limits::MEMORY_SIZE)
-    Limits::MEMORY_SIZE.times do |i|
-      @memory[i] = Word.new
-    end
 
     @disassembler = nil
     @alu = ArithmeticLogicUnit.new(self)
     @cu = ControlUnit.new(self)
+    @mu = MemoryUnit.new(self)
 
   end
 
   def clock
-    instruction = @memory[@cu.ip]
+    instruction = @mu.fetch(@cu.ip)
     if @logger.debug?
       @logger.debug('Executing instruction at address %s - %s' % [@cu.ip, @disassembler.disassemble(instruction)]) if @disassembler != nil
       @logger.debug('Executing instruction at address %s' % @cu.ip) if @disassembler == nil
@@ -46,11 +45,11 @@ class CPU
     instance_variable_get(unit).send(function_name, instruction)
 
     @cu.increase_ip
-   end
+  end
 
 
   def change_memory_word(address, new_value)
-    @memory[address].load_value(new_value)
+    @mu.change_memory_word(address, new_value)
   end
 
   def ip
@@ -69,4 +68,10 @@ class CPU
   def halt
     @cu.halt
   end
+
+  def memory_size
+    @mu.memory.size
+  end
+
+
 end

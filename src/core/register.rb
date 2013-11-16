@@ -2,6 +2,7 @@ class Register
   attr_reader :size
   attr_reader :bytes
   attr_accessor :sign
+  #noinspection RubyResolve
   include WordFunctions
 
   def initialize(size)

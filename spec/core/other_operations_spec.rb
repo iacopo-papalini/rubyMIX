@@ -8,7 +8,7 @@ describe 'Correctly implements various Operations' do
     @instruction_parser = InstructionParser.new
     @address = 2500
     @register_word = Word.new([6, 7, 8, 9, 0])
-    @testing.memory[@address].load_value(Word.new(Sign::NEGATIVE, [1, 2, 3, 4, 5]))
+    @testing.mu.memory[@address].load_value(Word.new(Sign::NEGATIVE, [1, 2, 3, 4, 5]))
 
   end
 

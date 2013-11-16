@@ -111,7 +111,7 @@ describe 'Convert an assembly program and store in memory' do
     mix = CPU.new
     @assembler.load_cpu mix
     mix.ip.should eq  3000
-    mix.memory[3000].should eq @instruction_parser.as_word('STA 1')
+    mix.mu.memory[3000].should eq @instruction_parser.as_word('STA 1')
   end
 
   #noinspection RubyResolve
