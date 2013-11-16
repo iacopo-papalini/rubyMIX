@@ -11,6 +11,8 @@ module Sign
 end
 
 module WordFunctions
+  CHARACTERS = " ABCDEFGHI?JKLMONPQR??STUVWXYZ0123456789.,()+-*/=$<>@;:'"
+
   def load_value (word, left = 0, right = Limits::BYTES_IN_WORD)
     if left == 0
       @sign = word.sign
@@ -71,6 +73,20 @@ module WordFunctions
    self
   end
 
+  def string
+    ret = ''
+    bytes.each do |byte|
+      ret += CHARACTERS[byte]
+    end
+    ret
+  end
+  def store_string(string)
+    (self.bytes.length - 1).downto 0 do |i|
+      @bytes[i] = CHARACTERS.index(string[i])
+    end
+    self
+  end
+
   def increment_value(value)
     store_long(self.long + value)
   end
@@ -107,4 +123,6 @@ class Word
     return false if another_word == nil
     self.bytes == another_word.bytes && self.sign==another_word.sign
   end
+
+
 end

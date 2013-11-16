@@ -67,4 +67,13 @@ describe 'MIX word' do
     @to.should eq Word.new(Sign::POSITIVE, [0, 2, 3, 4, 5])
   end
 
+  it 'should correctly render as string' do
+    @to.string.should eq 'ABCDE'
+    Word.new([55, 21, 32,0, 18]).string.should eq "'?2 Q"
+  end
+
+  it 'should correctly store a string' do
+    Word.new.store_string('ABCDE').bytes.should eq [1,2,3,4,5]
+
+  end
 end

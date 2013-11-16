@@ -1,3 +1,5 @@
+require 'logger'
+
 # Known limits:
 # - no floating point operations allowed
 # - no I/O
@@ -11,8 +13,6 @@ class CPU
   attr_reader :cu
   attr_reader :mu
 
-
-  CHARACTERS = " ABCDEFGHI?JKLMONPQR??STUVWXYZ0123456789.,()+-*/=$<>@;:'"
   INC = 0
   DEC = 1
   ENT = 2

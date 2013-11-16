@@ -68,9 +68,30 @@ class ControlUnit < AbstractUnit
 
   def generic_operation(instruction)
     _, f = extract_op_code_and_modifier(instruction)
-    if f == Instructions::F_HLT
-      @halt = true
-      @ip = nil
+    case f
+      when Instructions::F_HLT
+        @halt = true
+        @ip = nil
+
+      when Instructions::F_CHAR
+        ra = @cpu.ra.long
+        @cpu.ra.store_string('%05d' % (ra/ 100000))
+        @cpu.rx.store_string('%05d' % (ra% 100000))
+      when Instructions::F_NUM
+        tmp = @cpu.ra.bytes + @cpu.rx.bytes
+        sum = 0
+        tmp.each do |byte|
+          sum = sum * 10 + byte % 10
+        end
+        if sum > Limits::MAX_INT
+          sum = Limits::MAX_INT
+          @cpu.alu.overflow = true
+        end
+
+        @cpu.ra.store_long(sum)
+      else
+        raise 'Unimplemented instruction '+ instruction.to_s
     end
   end
+
 end

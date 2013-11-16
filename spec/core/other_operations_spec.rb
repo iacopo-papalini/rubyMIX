@@ -22,4 +22,9 @@ describe 'Correctly implements various Operations' do
 
   end
 
+  it 'should raise exception for unimplemented operation' do
+    @testing.mu.memory[0].bytes[4] = 65
+    expect {
+      @testing.clock }.to raise_error
+  end
 end
