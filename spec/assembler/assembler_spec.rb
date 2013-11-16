@@ -1,13 +1,5 @@
-$:.unshift (File.dirname(__FILE__) + '/../../src/')
-$:.unshift (File.dirname(__FILE__) + '/../../generated/')
+require File.dirname(__FILE__) +'/../../src/autoload.rb'
 require 'rspec'
-require 'word'
-require 'assembler/instruction_parser'
-require 'assembler/expression_parser'
-require 'assembler/assembler'
-require 'instructions'
-require 'mix_core'
-require 'register'
 
 RSpec.configure do |c|
   # declare an exclusion filter
@@ -32,6 +24,17 @@ describe 'Convert an assembly program and store in memory' do
     expect {
       #noinspection RubyResolve
       @assembler.parse_line ' EQU 1000' }.to raise_error
+  end
+
+  #noinspection RubyResolve
+  it 'should parse a line with a data CON definition' do
+    @assembler.parse_lines [' ORIG 3000', 'XX CON -64', 'TEST NOP']
+    @assembler.set_memory_locations.count.should eq 2
+    @assembler.set_memory_locations[3001].should eq @instruction_parser.as_word('NOP')
+    @assembler.set_memory_locations[3000].should eq Word.new(Sign::NEGATIVE, [0,0,0,1,0])
+
+
+
   end
 
   #noinspection RubyResolve
@@ -79,6 +82,7 @@ describe 'Convert an assembly program and store in memory' do
     @assembler.set_memory_locations[3005].should eq @instruction_parser.as_word('STA 65')
     @assembler.set_memory_locations[3006].should eq @instruction_parser.as_word('STA 5')
   end
+
   #noinspection RubyResolve
   it 'should correctly resolve two interleaved future references' do
     lines = [' ORIG 3000', ' JMP TEST+5', ' STA 1', ' STA TEST2', 'TEST STA 3', ' STA 4', 'TEST2 STA 65', ' STA 5']
@@ -108,6 +112,15 @@ describe 'Convert an assembly program and store in memory' do
     @assembler.load_cpu mix
     mix.ip.should eq  3000
     mix.memory[3000].should eq @instruction_parser.as_word('STA 1')
+  end
+
+  #noinspection RubyResolve
+  it 'should skip a comment' do
+    lines = [' ORIG 3000', ' JMP TEST+5', '* ignore me', ' STA 1', 'TEST STA 3']
+    @assembler.parse_lines lines
+    @assembler.set_memory_locations[3000].should eq @instruction_parser.as_word('JMP 3007')
+    @assembler.set_memory_locations[3001].should eq @instruction_parser.as_word('STA 1')
+    @assembler.set_memory_locations[3002].should eq @instruction_parser.as_word('STA 3')
   end
 
 end

@@ -1,12 +1,5 @@
-$:.unshift (File.dirname(__FILE__) + '/../../src/')
-$:.unshift (File.dirname(__FILE__) + '/../../generated/')
 require 'rspec'
-require 'mix_core'
-require 'register'
-require 'word'
-require 'assembler/instruction_parser'
-require 'assembler/expression_parser'
-require 'instructions'
+require File.dirname(__FILE__) +'/../../src/autoload.rb'
 
 def assert_not_jumped_and_reset_ip
   @testing.rj.long.should eq 0

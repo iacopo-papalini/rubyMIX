@@ -1,13 +1,23 @@
+************************************
+*                                  *
+*        Fibonacci series          *
+*                                  *
+* Calculates the first 30 numbers  *
+* of the Fibonacci series          *
+*                                  *
+************************************
+COUNT   EQU     30
+BUFFER  EQU     3000
         ORIG    2000
-START   ENT1    29       # Initialize counters
+START   ENT1    COUNT       # Initialize counters
         ENT2    0
-        ENTA    1        # Accumulate 1
-        STA     3000     # First value of sequence should be 0, setting 1 in order to init sequence
-LOOP    ADD     2999,2   # Add accumulator with previous number
-        INC2    1        # Increment sequence number
-        STA     3000,2   # Store accumulated value
+        ENTA    1           # Accumulate 1
+        STA     BUFFER      # First value of sequence should be 0, setting 1 in order to init sequence
+LOOP    ADD     BUFFER-1,2  # Add accumulator with previous number
+        INC2    1           # Increment sequence number
+        STA     BUFFER,2    # Store accumulated value
         DEC1    1
-        J1NZ    LOOP     # Close loop
-        STZ     3000     # Reset to 0 first number of sequence
+        J1NZ    LOOP        # Close loop
+        STZ     BUFFER      # Reset to 0 first number of sequence
         HLT
         END START

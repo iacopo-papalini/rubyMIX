@@ -83,6 +83,10 @@ module WordFunctions
   def to_s
     self.class.to_s + ': ' + @sign.to_s + ' ' +@bytes.to_s
   end
+
+  def as_word
+    self
+  end
 end
 
 class Word
@@ -100,6 +104,7 @@ class Word
   end
 
   def ==(another_word)
+    return false if another_word == nil
     self.bytes == another_word.bytes && self.sign==another_word.sign
   end
 end

@@ -14,6 +14,7 @@ class MixCore
   attr_accessor :overflow
   attr_accessor :ip
   attr_reader :halt
+  attr_writer :disassembler
 
   INC = 0
   DEC = 1
@@ -35,7 +36,7 @@ class MixCore
       @memory[i] = Word.new
     end
     @ip = 0
-
+    @disassembler = nil
     @instruction_to_function = {0 => 'nop'}
     (Instructions::OP_ADD..Instructions::OP_SUB).each { |op_code| @instruction_to_function[op_code] = 'add_or_sub' }
     @instruction_to_function[Instructions::OP_MUL] = 'mul'
@@ -49,8 +50,11 @@ class MixCore
   end
 
   def clock
-    @logger.debug("Executing instruction at address %s" % @ip)
     instruction = @memory[@ip]
+    if @logger.debug?  then
+      @logger.debug('Executing instruction at address %s - %s' % [@ip, @disassembler.disassemble(instruction)]) if @disassembler != nil
+      @logger.debug('Executing instruction at address %s' % @ip) if @disassembler == nil
+    end
     op_code, _ = extract_op_code_and_modifier(instruction)
 
     function_name = @instruction_to_function[op_code]
@@ -258,5 +262,6 @@ class MixCore
   def lesser_or_equal
     (@eq or @lt) and not @gt
   end
+
 
 end

@@ -1,14 +1,5 @@
-$:.unshift (File.dirname(__FILE__) + '/../../src/')
-$:.unshift (File.dirname(__FILE__) + '/../../generated/')
+require File.dirname(__FILE__) +'/../../src/autoload.rb'
 require 'rspec'
-require 'word'
-require 'assembler/instruction_parser'
-require 'assembler/expression_parser'
-require 'assembler/assembler'
-require 'assembler/disassembler'
-require 'instructions'
-require 'mix_core'
-require 'register'
 
 def verify_instruction(instruction)
   word = @instruction_parser.as_word instruction

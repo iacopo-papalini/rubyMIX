@@ -1,10 +1,5 @@
-$:.unshift (File.dirname(__FILE__) + '/../../src/')
-$:.unshift (File.dirname(__FILE__) + '/../../generated/')
+require File.dirname(__FILE__) +'/../../src/autoload.rb'
 require 'rspec'
-require 'word'
-require 'assembler/instruction_parser'
-require 'assembler/expression_parser'
-require 'instructions'
 
 describe 'Convert line to word' do
   before(:each) do
@@ -52,7 +47,7 @@ describe 'Convert line to word' do
 
   it 'should parse correctly an EQU meta instruction' do
     instruction = @instruction_parser.as_instruction('EQU 1000')
-    instruction.class.should eq InstructionParser::MetaInstruction
+    instruction.class.should eq MetaInstruction
     instruction.value.should eq 1000
     instruction.code.should eq 'EQU'
   end

@@ -1,10 +1,5 @@
-$:.unshift (File.dirname(__FILE__) + '/../../src/')
-$:.unshift (File.dirname(__FILE__) + '/../../generated/')
+require File.dirname(__FILE__) +'/../../src/autoload.rb'
 require 'rspec'
-require 'mix_core'
-require 'register'
-require 'word'
-require 'assembler/instruction_parser'
 
 describe 'Correctly implements loading Operations' do
   before(:each) do

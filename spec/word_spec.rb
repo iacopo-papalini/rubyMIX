@@ -1,9 +1,5 @@
-$:.unshift (File.dirname(__FILE__) + '/../src/')
-$:.unshift (File.dirname(__FILE__) + '/../generated/')
-
+require File.dirname(__FILE__) +'/../src/autoload.rb'
 require 'rspec'
-require 'mix_core'
-require 'word'
 
 describe 'MIX word' do
   before(:each) do

@@ -1,8 +1,5 @@
-$:.unshift (File.dirname(__FILE__) +  '/../src/')
-$:.unshift (File.dirname(__FILE__) + '/../generated/')
+require File.dirname(__FILE__) +'/../src/autoload.rb'
 require 'rspec'
-require 'register'
-require 'word'
 
 # See page 127 of 'The Art of Computer Programming, Vol. 1'
 describe 'Register' do

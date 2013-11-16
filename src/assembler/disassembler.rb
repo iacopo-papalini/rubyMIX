@@ -15,7 +15,7 @@ class Disassembler
 
     str += ' ' + address.to_s if address != 0 or i!=0
     str += ',' + i.to_s if i != 0
-    str += '(%d:%d)' % [f/8, f%8] if f!= InstructionParser::DEFAULT_F and has_f(op_code)
+    str += '(%d:%d)' % [f/8, f%8] if f!= CpuInstruction::DEFAULT_F and has_f(op_code)
 
     str
   end

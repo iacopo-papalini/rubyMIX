@@ -1,9 +1,5 @@
-$:.unshift (File.dirname(__FILE__) + '/../../src/')
-$:.unshift (File.dirname(__FILE__) + '/../../generated/')
+require File.dirname(__FILE__) +'/../../src/autoload.rb'
 require 'rspec'
-require 'mix_core'
-require 'register'
-require 'word'
 
 describe 'Correctly implements Address @t.ansfer Operations' do
   before(:each) do

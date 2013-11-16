@@ -54,7 +54,7 @@ class ExpressionParser
     parts = BINARY_OPERATION_SPLIT_REGEXP.match string
     raise 'Invalid expression ' + string if parts == nil
     right = evaluate_single_token(parts['RIGHT'])
-    raise 'Invalid sub expression ' + right if right == nil
+    raise 'Invalid sub expression ' + parts['RIGHT'] if right == nil
     left = evaluate(parts['LEFT'])
     operation = parts['OP']
     return left, operation, right

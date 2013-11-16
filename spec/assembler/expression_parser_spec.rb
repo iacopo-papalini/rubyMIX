@@ -1,8 +1,6 @@
-$:.unshift (File.dirname(__FILE__) + '/../../src/')
-$:.unshift (File.dirname(__FILE__) + '/../../generated/')
+require File.dirname(__FILE__) +'/../../src/autoload.rb'
 require 'rspec'
 require 'rspec/mocks'
-require 'assembler/expression_parser'
 
 describe 'Parses MIXAL expressions' do
   before(:each) do

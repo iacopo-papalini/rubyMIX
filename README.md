@@ -11,6 +11,9 @@ Known issues
     * missing floating point operation
     * missing I?O operations
     * missing Shift operations
+    * Local symbols missing ([0-9][BHF])
+    * CON meta instruction missing
+    * Literal constants missing (=A+B=)
 
 * Assembly format more relaxed than the original one (no fixed length fields)
 * Future references can be used inside arbitrary expressions, not only alone
