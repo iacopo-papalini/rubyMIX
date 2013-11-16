@@ -108,7 +108,7 @@ describe 'Convert an assembly program and store in memory' do
     lines = [' ORIG 3000', 'START STA 1', 'TEST NOP', ' JMP TEST+5', ' END START']
     @assembler.parse_lines lines
 
-    mix = MixCore.new
+    mix = CPU.new
     @assembler.load_cpu mix
     mix.ip.should eq  3000
     mix.memory[3000].should eq @instruction_parser.as_word('STA 1')

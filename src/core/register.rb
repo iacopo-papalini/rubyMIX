@@ -15,19 +15,19 @@ class Register
   end
 end
 
-class Big < Register
+class LongRegister < Register
   def initialize
     super 5
   end
 end
 
-class Small < Register
+class ShortRegister < Register
   def initialize
     super 2
   end
 end
 
-class Jump < Small
+class JumpRegister < ShortRegister
   def sign
     Sign::POSITIVE
   end

@@ -3,7 +3,7 @@ require 'rspec'
 
 describe 'Correctly implements arithmetic Operations' do
   before(:each) do
-    @testing = MixCore.new
+    @testing = CPU.new
     @instruction_parser = InstructionParser.new
     @instruction_parser.expression_evaluator =  ExpressionParser.new(nil)
     @address = 2500
@@ -37,18 +37,18 @@ describe 'Correctly implements arithmetic Operations' do
     @testing.clock
 
     @testing.ra.long.should eq @register_value - 1
-    @testing.overflow.should eq true
+    @testing.alu.overflow.should eq true
   end
 
   it 'should handle the underflow' do
     @testing.ra.store_long(-@register_value)
     @testing.change_memory_word(@address, Word.new.store_long(-Limits::MAX_INT + 1))
     @testing.change_memory_word(@testing.ip, @instruction_parser.as_word('ADD %d' % @address))
-    @testing.overflow.should eq false
+    @testing.alu.overflow.should eq false
     @testing.clock
 
     @testing.ra.long.should eq (-@register_value + 1)
-    @testing.overflow.should eq true
+    @testing.alu.overflow.should eq true
   end
 
   it 'should subtract the value of the memory cell to rA' do

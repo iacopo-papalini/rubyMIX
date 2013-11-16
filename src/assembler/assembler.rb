@@ -77,7 +77,7 @@ class Assembler
 
   def load_cpu(mix_core)
     raise 'END statement not yet reached' if @starting_ip == nil
-    mix_core.ip = @starting_ip
+    mix_core.force_instruction_pointer @starting_ip
     set_memory_locations.each do |address, word|
       mix_core.memory[address].store_value(word)
     end

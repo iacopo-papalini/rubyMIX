@@ -4,7 +4,7 @@ require 'rspec'
 
 describe 'Core initialization' do
   it 'should setup the cpu' do
-    t = MixCore.new
+    t = CPU.new
     all_registers_zero t
     t.ip.should eq 0
     t.memory.size.should eq 4000
@@ -16,7 +16,7 @@ describe 'Core initialization' do
   end
 
   it 'loop doing nothing if started empty' do
-    t = MixCore.new
+    t = CPU.new
     1.upto 4000 do |cycle|
       t.clock
       t.ip.should eq cycle % 4000
@@ -29,10 +29,10 @@ describe 'Core initialization' do
 end
 
 def all_registers_zero(t)
-  t.ra.should eq Register::Big.new
-  t.rx.should eq Register::Big.new
-  t.rj.should eq Register::Jump.new
-  t.ri.should eq Array.new(6, Register::Small.new)
+  t.ra.should eq Register::LongRegister.new
+  t.rx.should eq Register::LongRegister.new
+  t.rj.should eq Register::JumpRegister.new
+  t.ri.should eq Array.new(6, Register::ShortRegister.new)
   t.eq.should eq false
   t.gt.should eq false
   t.lt.should eq false

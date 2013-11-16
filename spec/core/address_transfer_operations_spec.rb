@@ -3,7 +3,7 @@ require 'rspec'
 
 describe 'Correctly implements Address @t.ansfer Operations' do
   before(:each) do
-    @testing = MixCore.new
+    @testing = CPU.new
   end
 
 

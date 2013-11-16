@@ -4,7 +4,7 @@ require 'rspec'
 
 describe 'Correctly implements various Operations' do
   before(:each) do
-    @testing = MixCore.new
+    @testing = CPU.new
     @instruction_parser = InstructionParser.new
     @address = 2500
     @register_word = Word.new([6, 7, 8, 9, 0])

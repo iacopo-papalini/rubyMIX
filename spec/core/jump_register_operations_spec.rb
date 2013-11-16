@@ -4,7 +4,7 @@ require File.dirname(__FILE__) +'/../../src/autoload.rb'
 def assert_not_jumped_and_reset_ip
   @testing.rj.long.should eq 0
   @testing.ip.should eq @ip + 1
-  @testing.ip = @ip
+  @testing.force_instruction_pointer @ip
 
 end
 
@@ -15,13 +15,13 @@ end
 
 describe 'Correctly implements jump Operations that check register values' do
   before(:each) do
-    @testing = MixCore.new
+    @testing = CPU.new
     @instruction_parser = InstructionParser.new
     @instruction_parser.expression_evaluator = ExpressionParser.new(nil)
     @address = 2500
     @shift = 3
     @ip = 100
-    @testing.ip = @ip
+    @testing.force_instruction_pointer  @ip
     @testing.ri[0].store_long(@shift)
   end
 

@@ -3,7 +3,7 @@ require 'rspec'
 
 describe 'Correctly implements loading Operations' do
   before(:each) do
-    @testing = MixCore.new
+    @testing = CPU.new
     @instruction_parser = InstructionParser.new
     @instruction_parser.expression_evaluator =  ExpressionParser.new(nil)
     @address = 2500
