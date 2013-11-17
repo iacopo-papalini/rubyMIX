@@ -4,8 +4,8 @@ assembler = Assembler.new
 mix = CPU.new
 mix.disassembler = disassembler
 assembler.disassembler = disassembler
-program = '1-fibonacci.mix'
-#program ='2-500primes.mix'
+#program = '1-fibonacci.mix'
+program ='2-500primes.mix'
 file = File.dirname(__FILE__) + '/../examples/' + program
 
 

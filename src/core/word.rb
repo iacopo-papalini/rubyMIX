@@ -1,3 +1,4 @@
+#encoding: UTF-8
 module Limits
   BITS_IN_BYTE = 6
   BYTES_IN_WORD = 5
@@ -11,7 +12,7 @@ module Sign
 end
 
 module WordFunctions
-  CHARACTERS = " ABCDEFGHI?JKLMONPQR??STUVWXYZ0123456789.,()+-*/=$<>@;:'"
+  CHARACTERS = " ABCDEFGHI∆JKLMONPQR∑∏STUVWXYZ0123456789.,()+-*/=$<>@;:'"
 
   def load_value (word, left = 0, right = Limits::BYTES_IN_WORD)
     if left == 0
