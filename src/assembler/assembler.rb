@@ -21,6 +21,7 @@ class Assembler
 
     @logger = Logger.new(STDOUT)
     @starting_ip = nil
+    @future_references = {}
   end
 
   class LineIterator
@@ -57,22 +58,9 @@ class Assembler
     end
   end
 
-
-  def parse_line (line, location = @location_counter)
-    return [nil, nil] if line[0] =='*'
-
-    @logger.debug 'Parsing line <%s>, location counter: %d' % [line.strip, location]
-    parts = LINE_REGEXP.match line
-    instruction = @parser.as_instruction (parts['INSTRUCTION'])
-    assemble_line(instruction, parts)
-  end
-
   def resolve_symbol(string)
     return constants[string] if  @constants.has_key?(string)
-    parse_until_found_or_end(string)
-
-    raise 'Symbol %s not found ' % string if !@constants.has_key? string
-    constants[string]
+    FutureReference.new(string)
   end
 
   def load_cpu(mix_core)
@@ -85,24 +73,45 @@ class Assembler
 
   def define_constant(name, value)
     @constants[name] = value
+    if @future_references.has_key? name
+      @future_references[name].each do |entry|
+        address, instruction = entry
+        set_memory_locations[address] = instruction.as_word
+      end
+    end
+  end
+
+  def parse_line (line, location = @location_counter)
+    return [nil, nil] if line[0] =='*'
+
+    @logger.debug 'Parsing line <%s>, location counter: %d' % [line.strip, location]
+    parts = LINE_REGEXP.match line
+    instruction = @parser.as_instruction (parts['INSTRUCTION'])
+    assemble_line(instruction, parts)
   end
 
   private
 
   def parse_next_line
-    instruction, defined_symbol = parse_line(@iterator.next_line_contents, @location_counter)
-    if instruction != nil
-      set_memory_location(@location_counter, instruction.as_word)
+    word, defined_symbol = parse_line(@iterator.next_line_contents, @location_counter)
+    if word != nil
+      set_memory_location(@location_counter, word)
       store_address_in_globals(defined_symbol, @location_counter) if defined_symbol != nil
       @location_counter += 1
     end
   end
 
   def assemble_line(instruction, parts)
-    encoded_instruction = (instruction.class == MetaInstruction) ?
-        instruction.send(instruction.code.downcase, self, parts, instruction) :
-        instruction
-    [encoded_instruction, parts['LOC']]
+    instruction.execute(self, parts['LOC']) if instruction.class < MetaInstruction
+    if instruction.has_future_reference?
+      future_reference = instruction.future_reference
+      @future_references[future_reference] = [] if !@future_references.has_key? future_reference
+      @future_references[future_reference] << [@location_counter, instruction]
+      word = Word.new
+    else
+      word = instruction.as_word
+    end
+    [word, parts['LOC']]
 
   end
 
@@ -118,19 +127,7 @@ class Assembler
 
   def store_address_in_globals(global_address, location)
     if global_address != nil
-      @constants[global_address] = location
+      define_constant(global_address, location)
     end
-  end
-
-
-  def parse_until_found_or_end(symbol)
-    # That's tricky: this method is called recursively by resolve_symbol and _before_ the @location_counter
-    # has been increased (see method parse_next_line). So we need to let the parsing skip the current line
-    @location_counter += 1
-    while !@constants.has_key?(symbol) and not finished? do
-      parse_next_line
-    end
-    # See before: now we need to decrease the location counter so that no location is left empty
-    @location_counter -= 1
   end
 end

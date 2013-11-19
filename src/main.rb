@@ -4,8 +4,8 @@ assembler = Assembler.new
 mix = CPU.new
 mix.disassembler = disassembler
 assembler.disassembler = disassembler
-#program = '1-fibonacci.mix'
-program ='2-500primes.mix'
+program = '1-fibonacci.mix'
+#program ='2-500primes.mix'
 file = File.dirname(__FILE__) + '/../examples/' + program
 
 
@@ -17,6 +17,6 @@ until mix.halt do
 end
 
 (3000..3031).each do |i|
-  print mix.memory[i].long.to_s << ' '
+  print mix.mu.memory[i].long.to_s << ' '
 end
 print "\n"

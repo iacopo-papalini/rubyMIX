@@ -15,7 +15,8 @@ class InstructionParser
     parts = @word_regexp.match line
     raise("Invalid line: #{line}") if parts == nil
     if  is_meta_instruction? parts['OP']
-      ret = MetaInstruction.new(parts)
+      class_name = parts['OP'] + 'Instruction'
+      ret = Kernel.const_get(class_name).new(parts)
     else
       ret = CpuInstruction.new(parts)
     end

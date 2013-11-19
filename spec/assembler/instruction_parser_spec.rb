@@ -47,7 +47,7 @@ describe 'Convert line to word' do
 
   it 'should parse correctly an EQU meta instruction' do
     instruction = @instruction_parser.as_instruction('EQU 1000')
-    instruction.class.should eq MetaInstruction
+    instruction.class.should eq EQUInstruction
     instruction.value.should eq 1000
     instruction.code.should eq 'EQU'
   end

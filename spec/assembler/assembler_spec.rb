@@ -65,16 +65,16 @@ describe 'Convert an assembly program and store in memory' do
   end
   #noinspection RubyResolve
   it 'should correctly resolve a future reference' do
-    lines = [' ORIG 3000', ' JMP TEST+5', ' STA 1', ' STA 2', ' STA 3', ' STA 4', 'TEST STA 65', ' STA 5']
+    lines = [' ORIG 3000', ' JMP TEST', ' STA 1', ' STA 2', ' STA 3', ' STA 4', 'TEST STA 65', ' STA 5']
     @assembler.parse_lines lines
-    @assembler.set_memory_locations[3000].should eq @instruction_parser.as_word('JMP 3010')
+    @assembler.set_memory_locations[3000].should eq @instruction_parser.as_word('JMP 3005')
     @assembler.set_memory_locations[3006].should eq @instruction_parser.as_word('STA 5')
   end
   #noinspection RubyResolve
   it 'should correctly resolve two nested future references' do
-    lines = [' ORIG 3000', ' JMP TEST+5', ' STA 1', ' STA TEST2', 'TEST2 STA 3', ' STA 4', 'TEST STA 65', ' STA 5']
+    lines = [' ORIG 3000', ' JMP TEST', ' STA 1', ' STA TEST2', 'TEST2 STA 3', ' STA 4', 'TEST STA 65', ' STA 5']
     @assembler.parse_lines lines
-    @assembler.set_memory_locations[3000].should eq @instruction_parser.as_word('JMP 3010')
+    @assembler.set_memory_locations[3000].should eq @instruction_parser.as_word('JMP 3005')
     @assembler.set_memory_locations[3001].should eq @instruction_parser.as_word('STA 1')
     @assembler.set_memory_locations[3002].should eq @instruction_parser.as_word('STA 3003')
     @assembler.set_memory_locations[3003].should eq @instruction_parser.as_word('STA 3')
@@ -85,9 +85,9 @@ describe 'Convert an assembly program and store in memory' do
 
   #noinspection RubyResolve
   it 'should correctly resolve two interleaved future references' do
-    lines = [' ORIG 3000', ' JMP TEST+5', ' STA 1', ' STA TEST2', 'TEST STA 3', ' STA 4', 'TEST2 STA 65', ' STA 5']
+    lines = [' ORIG 3000', ' JMP TEST', ' STA 1', ' STA TEST2', 'TEST STA 3', ' STA 4', 'TEST2 STA 65', ' STA 5']
     @assembler.parse_lines lines
-    @assembler.set_memory_locations[3000].should eq @instruction_parser.as_word('JMP 3008')
+    @assembler.set_memory_locations[3000].should eq @instruction_parser.as_word('JMP 3003')
     @assembler.set_memory_locations[3001].should eq @instruction_parser.as_word('STA 1')
     @assembler.set_memory_locations[3002].should eq @instruction_parser.as_word('STA 3005')
     @assembler.set_memory_locations[3003].should eq @instruction_parser.as_word('STA 3')
@@ -116,9 +116,9 @@ describe 'Convert an assembly program and store in memory' do
 
   #noinspection RubyResolve
   it 'should skip a comment' do
-    lines = [' ORIG 3000', ' JMP TEST+5', '* ignore me', ' STA 1', 'TEST STA 3']
+    lines = [' ORIG 3000', ' JMP TEST', '* ignore me', ' STA 1', 'TEST STA 3']
     @assembler.parse_lines lines
-    @assembler.set_memory_locations[3000].should eq @instruction_parser.as_word('JMP 3007')
+    @assembler.set_memory_locations[3000].should eq @instruction_parser.as_word('JMP 3002')
     @assembler.set_memory_locations[3001].should eq @instruction_parser.as_word('STA 1')
     @assembler.set_memory_locations[3002].should eq @instruction_parser.as_word('STA 3')
   end

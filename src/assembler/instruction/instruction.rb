@@ -2,64 +2,52 @@ class Instruction
   attr_writer :expression_evaluator
 
   def initialize(parts)
-    @parts = parts
+    @parts_address = parts['ADDRESS']
+    @parts_op = parts['OP']
+    @parts_f = parts['F']
+    @parts_i = parts['I']
+    @parts_sign = parts['SIGN']
     @expression_evaluator = nil
+    @parsed_address = nil
   end
 
   def extract_address
-    address_string = @parts['ADDRESS']
-    if address_string == nil
+    if @parts_address == nil
       return [0, 0]
     end
-    address = @expression_evaluator.evaluate(address_string)
+    address = @expression_evaluator.evaluate(@parts_address)
     [address >> Limits::BITS_IN_BYTE, address & Limits::BYTE]
   end
 
+  def check_address
+    @parsed_address = @expression_evaluator.evaluate(@parts_address) if @parsed_address == nil
+    @parsed_address
+  end
+
   def extract_sign
-    @parts['SIGN'] != '-' ? Sign::POSITIVE : Sign::NEGATIVE
+    @parts_sign != '-' ? Sign::POSITIVE : Sign::NEGATIVE
+  end
+
+  def has_future_reference?
+    return false if @parts_address == nil
+    check_address.class <= FutureReference
+  end
+
+  def future_reference
+    raise 'No future reference present'  if  !(check_address.class <= FutureReference )
+    check_address.symbol
   end
 
 end
 
-class MetaInstruction < Instruction
-  def value
-    Word.new(extract_sign, [0, 0, 0] + extract_address).long
-  end
-
-  def code
-    @parts['OP']
-  end
-
-  def equ(assembler, parts, instruction)
-    raise 'Constant name needed for EQU instruction' if parts['LOC'] == nil
-    assembler.define_constant(parts['LOC'], instruction.value)
-    nil
-  end
-
-  def orig(assembler,_, instruction)
-    assembler.location_counter = instruction.value
-    nil
-  end
-
-  def end(assembler,_, instruction)
-    assembler.starting_ip = instruction.value
-    nil
-  end
-
-  def con(_,_, instruction)
-    sign = instruction.extract_sign
-    address = instruction.extract_address
-
-    Word.new(sign, [0,0,0] +address )
-  end
-end
 
 class CpuInstruction < Instruction
   DEFAULT_F = 5
+
   def as_word
-    op_code = Instructions::OPERATION[@parts['OP']]
-    f = Instructions::F_VALUE[@parts['OP']]
-    f = extract_f if f == nil or @parts['F'] != nil
+    op_code = Instructions::OPERATION[@parts_op]
+    f = Instructions::F_VALUE[@parts_op]
+    f = extract_f if f == nil or @parts_f != nil
     i = extract_i
 
     sign = extract_sign
@@ -69,10 +57,10 @@ class CpuInstruction < Instruction
   end
 
   def extract_f
-    @parts['F'] != nil ? @expression_evaluator.evaluate(@parts['F']) : DEFAULT_F
+    @parts_f != nil ? @expression_evaluator.evaluate(@parts_f) : DEFAULT_F
   end
 
   def extract_i
-    @parts['I'] != nil ? @parts['I'].to_i : 0
+    @parts_i != nil ? @parts_i.to_i : 0
   end
 end
