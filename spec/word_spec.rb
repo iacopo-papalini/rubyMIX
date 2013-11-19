@@ -1,3 +1,4 @@
+#encoding: UTF-8
 require File.dirname(__FILE__) +'/../src/autoload.rb'
 require 'rspec'
 
@@ -69,7 +70,7 @@ describe 'MIX word' do
 
   it 'should correctly render as string' do
     @to.string.should eq 'ABCDE'
-    Word.new([55, 21, 32,0, 18]).string.should eq "'?2 Q"
+    Word.new([55, 21, 32,0, 18]).string.should eq "'∏2 Q"
   end
 
   it 'should correctly store a string' do
