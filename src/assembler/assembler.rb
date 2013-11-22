@@ -58,10 +58,6 @@ class Assembler
     end
   end
 
-  def resolve_symbol(string)
-    return constants[string] if  @constants.has_key?(string)
-    FutureReference.new(string)
-  end
 
   def load_cpu(mix_core)
     raise 'END statement not yet reached' if @starting_ip == nil
@@ -72,13 +68,24 @@ class Assembler
   end
 
   def define_constant(name, value)
+    @logger.debug('Defining constant  %s' % name)
     @constants[name] = value
-    if @future_references.has_key? name
-      @future_references[name].each do |entry|
-        address, instruction = entry
-        set_memory_locations[address] = instruction.as_word
-      end
-    end
+
+    resolve_future_references(name, value)
+  end
+
+
+
+
+  def resolve_constant(string)
+    string = back_local_reference(string)
+    return constants[string] if  @constants.has_key?(string)
+    @logger.debug('%s symbol not found, returning future reference' % string)
+    FutureReference.new(string)
+  end
+
+  def back_local_reference(name)
+    (name =~ /^[0-9]B$/) ?  name.sub('B', 'H') :  name
   end
 
   def parse_line (line, location = @location_counter)
@@ -101,10 +108,29 @@ class Assembler
     end
   end
 
+  def resolve_future_references(name, value)
+    local = name =~ /^[0-9]H$/
+    future_reference = local ? name.sub('H', 'F') : name
+
+    override_future_reference_with_local(future_reference, value) if local
+
+    if @future_references.has_key? future_reference
+      @logger.debug('Replacing future references for just found symbol %s' % future_reference)
+
+      @future_references[future_reference].each do |entry|
+        address, instruction = entry
+        @logger.debug('Replacing future at address %d' %address)
+        set_memory_locations[address] = instruction.as_word
+      end
+    end
+
+    delete_local_reference_from_constants(future_reference) if local
+  end
   def assemble_line(instruction, parts)
     instruction.execute(self, parts['LOC']) if instruction.class < MetaInstruction
     if instruction.has_future_reference?
       future_reference = instruction.future_reference
+      @logger.debug('Adding future reference %s' %future_reference)
       @future_references[future_reference] = [] if !@future_references.has_key? future_reference
       @future_references[future_reference] << [@location_counter, instruction]
       word = Word.new
@@ -112,7 +138,16 @@ class Assembler
       word = instruction.as_word
     end
     [word, parts['LOC']]
+  end
 
+  def override_future_reference_with_local(future_reference, value)
+    @logger.debug('Adding temporary key %s' % future_reference)
+    @constants[future_reference] = value
+  end
+
+  def delete_local_reference_from_constants(future_reference)
+    @logger.debug('Removing temporary ket %s' % future_reference)
+    @constants.delete(future_reference)
   end
 
 

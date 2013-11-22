@@ -12,7 +12,6 @@ Known issues
     * missing I/O operations
     * missing alphanumeric symbols operations
     * missing Shift operations
-    * Local symbols missing ([0-9][BHF])
     * ALF meta instruction missing
     * Literal constants missing (=A+B=)
 

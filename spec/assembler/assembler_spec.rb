@@ -31,8 +31,7 @@ describe 'Convert an assembly program and store in memory' do
     @assembler.parse_lines [' ORIG 3000', 'XX CON -64', 'TEST NOP']
     @assembler.set_memory_locations.count.should eq 2
     @assembler.set_memory_locations[3001].should eq @instruction_parser.as_word('NOP')
-    @assembler.set_memory_locations[3000].should eq Word.new(Sign::NEGATIVE, [0,0,0,1,0])
-
+    @assembler.set_memory_locations[3000].should eq Word.new(Sign::NEGATIVE, [0, 0, 0, 1, 0])
 
 
   end
@@ -110,7 +109,7 @@ describe 'Convert an assembly program and store in memory' do
 
     mix = CPU.new
     @assembler.load_cpu mix
-    mix.ip.should eq  3000
+    mix.ip.should eq 3000
     mix.mu.memory[3000].should eq @instruction_parser.as_word('STA 1')
   end
 
@@ -123,4 +122,33 @@ describe 'Convert an assembly program and store in memory' do
     @assembler.set_memory_locations[3002].should eq @instruction_parser.as_word('STA 3')
   end
 
+  #noinspection RubyResolve
+  it 'should understand a backward local reference' do
+    lines = [' ORIG 3000', '0H STA 1', ' STA 1', ' JMP 0B']
+    @assembler.parse_lines lines
+    @assembler.set_memory_locations[3000].should eq @instruction_parser.as_word('STA 1')
+    @assembler.set_memory_locations[3001].should eq @instruction_parser.as_word('STA 1')
+    @assembler.set_memory_locations[3002].should eq @instruction_parser.as_word('JMP 3000')
+  end
+
+  #noinspection RubyResolve
+  it 'should understand two backward local references without ' do
+    lines = [' ORIG 3000', '0H STA 1', ' STA 1', ' JMP 0B', '0H STA 1', ' STA 1', ' JMP 0B']
+    @assembler.parse_lines lines
+    @assembler.set_memory_locations[3000].should eq @instruction_parser.as_word('STA 1')
+    @assembler.set_memory_locations[3001].should eq @instruction_parser.as_word('STA 1')
+    @assembler.set_memory_locations[3002].should eq @instruction_parser.as_word('JMP 3000')
+    @assembler.set_memory_locations[3003].should eq @instruction_parser.as_word('STA 1')
+    @assembler.set_memory_locations[3004].should eq @instruction_parser.as_word('STA 1')
+    @assembler.set_memory_locations[3005].should eq @instruction_parser.as_word('JMP 3003')
+  end
+
+  #noinspection RubyResolve
+  it 'should understand a forward local reference' do
+    lines = [' ORIG 3000', ' JMP 2F', ' STA 1', '2H STA 1']
+    @assembler.parse_lines lines
+    @assembler.set_memory_locations[3000].should eq @instruction_parser.as_word('JMP 3002')
+    @assembler.set_memory_locations[3001].should eq @instruction_parser.as_word('STA 1')
+    @assembler.set_memory_locations[3002].should eq @instruction_parser.as_word('STA 1')
+  end
 end
