@@ -28,12 +28,10 @@ describe 'Convert an assembly program and store in memory' do
 
   #noinspection RubyResolve
   it 'should parse a line with a data CON definition' do
-    @assembler.parse_lines [' ORIG 3000', 'XX CON -64', 'TEST NOP']
+    @assembler.parse_lines [' ORIG 3000', 'XX CON -' + Limits::MAX_INT.to_s, 'TEST NOP']
     @assembler.set_memory_locations.count.should eq 2
     @assembler.set_memory_locations[3001].should eq @instruction_parser.as_word('NOP')
-    @assembler.set_memory_locations[3000].should eq Word.new(Sign::NEGATIVE, [0, 0, 0, 1, 0])
-
-
+    @assembler.set_memory_locations[3000].should eq Word.new(Sign::NEGATIVE, [63, 63, 63, 63, 63])
   end
 
   #noinspection RubyResolve

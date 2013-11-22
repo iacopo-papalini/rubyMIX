@@ -76,6 +76,7 @@ class MemoryUnit < AbstractUnit
 
   def extract_word_from_memory(instruction)
     modified_address = calculate_modified_address(instruction)
+    raise 'Invalid memory address %d' %modified_address if modified_address < 0 or modified_address >= @memory.size
     @memory[modified_address]
   end
 end

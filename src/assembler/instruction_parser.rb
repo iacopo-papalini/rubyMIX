@@ -7,7 +7,7 @@ class InstructionParser
 
   def initialize
     # See The Art Of Computer Programming V.1 pag 128
-    @word_regexp = /(?<OP>[A-Z][A-Z0-9]+)\s*(((?<SIGN>[-])?(?<ADDRESS>[^,\(\s]+))?(,(?<I>[0-9]))?(\((?<F>[^\)]+)\))?)?/
+    @word_regexp = /(?<OP>[A-Z][A-Z0-9]+)\s*(((?<ADDRESS>\-?[^,\(\s]+))?(,(?<I>[0-9]))?(\((?<F>[^\)]+)\))?)?/
     @expression_evaluator = nil
   end
 

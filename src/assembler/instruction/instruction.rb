@@ -6,7 +6,6 @@ class Instruction
     @parts_op = parts['OP']
     @parts_f = parts['F']
     @parts_i = parts['I']
-    @parts_sign = parts['SIGN']
     @expression_evaluator = nil
     @parsed_address = nil
   end
@@ -25,7 +24,7 @@ class Instruction
   end
 
   def extract_sign
-    @parts_sign != '-' ? Sign::POSITIVE : Sign::NEGATIVE
+    (@parts_address != nil && @parts_address[0] == '-') ? Sign::NEGATIVE : Sign::POSITIVE
   end
 
   def has_future_reference?

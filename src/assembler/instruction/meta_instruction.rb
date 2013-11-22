@@ -49,9 +49,7 @@ class CONInstruction < MetaInstruction
   end
 
   def as_word
-    sign = extract_sign
-    address = extract_address
-    Word.new(sign, [0, 0, 0] +address)
+    Word.new().store_long(@expression_evaluator.evaluate(@parts_address))
   end
 end
 
