@@ -6,6 +6,7 @@ class Dispatcher
     initialize_alu_functions
     initialize_cu_functions
     initialize_mu_functions
+    initialize_io_functions
   end
 
   def dispatch(instruction)
@@ -31,8 +32,13 @@ class Dispatcher
 
   def initialize_cu_functions
     @instruction_to_function[Instructions::OP_HLT] = [:@cu, 'generic_operation']
-    @instruction_to_function[Instructions::OP_IOC] = [:@alu, 'nop']
     @instruction_to_function[Instructions::OP_JMP] = [:@cu, 'jump']
     (Instructions::OP_JAN..Instructions::OP_JXNP).each { |op_code| @instruction_to_function[op_code] = [:@cu, 'jump_check_register'] }
+  end
+
+  def initialize_io_functions
+    @instruction_to_function[Instructions::OP_IOC] = [:@io, 'ioc']
+    @instruction_to_function[Instructions::OP_OUT] = [:@io, 'out']
+
   end
 end

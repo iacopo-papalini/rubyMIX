@@ -7,6 +7,8 @@ cpu.disassembler = disassembler
 assembler.disassembler = disassembler
 assembler.logger =cpu.logger
 
+cpu.bind_io_device(18, STDOUT)
+
 Readline.completion_append_character=''
 Readline.completion_proc = Proc.new do |str|
   Dir[str+'*'].grep( /^#{Regexp.escape(str)}/ )
@@ -35,6 +37,11 @@ while buf = Readline.readline("> ", true)
       print "Dump %s to %s\n" %[$1, $2]
       ($1.to_i..$2.to_i).each do |i|
         print i.to_s + ":\t" + cpu.mu.memory[i].long.to_s + "\n"
+      end
+    when /^text\s+(\d+):(\d+)$/  then
+      print "Dump as text %s to %s\n" %[$1, $2]
+      ($1.to_i..$2.to_i).each do |i|
+        print i.to_s + ":\t" + cpu.mu.memory[i].string + "\n"
       end
     when /^run(\s(\d+))?$/ then
       while ($2 == nil or cpu.ip != $2.to_i) and !cpu.halt

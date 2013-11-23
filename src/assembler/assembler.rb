@@ -76,9 +76,6 @@ class Assembler
     resolve_future_references(name, value)
   end
 
-
-
-
   def resolve_constant(string)
     string = back_local_reference(string)
     return constants[string] if  @constants.has_key?(string)
@@ -124,6 +121,7 @@ class Assembler
         @logger.debug('Replacing future at address %d' %address)
         set_memory_locations[address] = instruction.as_word
       end
+      @future_references.delete(future_reference)
     end
 
     delete_local_reference_from_constants(future_reference) if local

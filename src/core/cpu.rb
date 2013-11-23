@@ -12,6 +12,7 @@ class CPU
   attr_reader :alu
   attr_reader :cu
   attr_reader :mu
+  attr_reader :io
   attr_reader :logger
 
   INC = 0
@@ -21,18 +22,18 @@ class CPU
 
   def initialize
     @logger = Logger.new(STDOUT)
-    @ra = LongRegister.new
-    @rx = LongRegister.new
+    @ra = LongRegister.new(:ra)
+    @rx = LongRegister.new(:rx)
     @ri = Array.new(6)
     @ri.length.times do |i|
-      @ri[i] = ShortRegister.new
+      @ri[i] = ShortRegister.new('ri%d' %(i+1))
     end
 
     @disassembler = nil
     @alu = ArithmeticLogicUnit.new(self, @logger)
     @cu = ControlUnit.new(self, @logger)
     @mu = MemoryUnit.new(self, @logger)
-
+    @io = IOUnit.new(self, @logger)
   end
 
   def clock
@@ -74,5 +75,8 @@ class CPU
     @mu.memory.size
   end
 
+  def bind_io_device(device_id, device_object)
+    @io.bind_device(device_id, device_object)
+  end
 
 end

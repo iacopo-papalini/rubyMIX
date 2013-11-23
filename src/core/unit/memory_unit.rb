@@ -60,25 +60,34 @@ class MemoryUnit < AbstractUnit
     if f == Instructions::F_DECA or f == Instructions::F_ENNA
       modified_address = 0 - modified_address
     end
+    @logger.debug('Applying operation %s to %s ' % [operation, register])  if @logger.debug?
     register.send(operation, modified_address)
   end
 
 
   def change_memory_word(address, new_value)
+    validate(address)
     @memory[address].load_value(new_value)
   end
 
   def fetch(address)
+    validate(address)
     @memory[address]
   end
 
   def store(address, value)
+    validate(address)
     @memory[address].store_value(value)
   end
 
   def extract_word_from_memory(instruction)
     modified_address = calculate_modified_address(instruction)
-    raise 'Invalid memory address %d' %modified_address if modified_address < 0 or modified_address >= @memory.size
+    validate(modified_address)
     @memory[modified_address]
+  end
+
+  private
+  def validate(modified_address)
+    raise 'Invalid memory address %d' %modified_address if modified_address < 0 or modified_address >= @memory.size
   end
 end
