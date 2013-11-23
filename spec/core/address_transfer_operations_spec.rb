@@ -4,6 +4,8 @@ require 'rspec'
 describe 'Correctly implements Address @t.ansfer Operations' do
   before(:each) do
     @testing = CPU.new
+    @instruction_parser = InstructionParser.new
+    @instruction_parser.expression_evaluator =  ExpressionParser.new(nil)
   end
 
 
@@ -22,6 +24,12 @@ describe 'Correctly implements Address @t.ansfer Operations' do
     @testing.change_memory_word(2, Word.new([1, 1, 0, 2, 52])) # ENT4      65
     @testing.clock
     @testing.ri[3].long.should eq 65
+  end
+
+  it 'change the memory location with a negative value' do
+    @testing.change_memory_word(0,  Word.new(Sign::NEGATIVE, [0, 1, 0, 2, 48])) # @instruction_parser.as_word('ENT1    -1'))
+    @testing.clock
+    @testing.ra.long.should eq -1
   end
 
   it 'change rA value on load instruction with index register add' do

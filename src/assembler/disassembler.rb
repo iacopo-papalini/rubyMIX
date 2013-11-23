@@ -1,6 +1,7 @@
 class Disassembler
   # To change this template use File | Settings | File Templates.
   def disassemble(word)
+    begin
     op_code = word.bytes[4]
     f = word.bytes[3]
     address = word.long(0, 2)
@@ -18,6 +19,11 @@ class Disassembler
     str += '(%d:%d)' % [f/8, f%8] if f!= CpuInstruction::DEFAULT_F and has_f(op_code)
 
     str
+    rescue  Exception => e
+      print e
+      print "\n%s" % word.to_s
+      ''
+    end
   end
 
   def has_f(op_code)

@@ -19,6 +19,8 @@ class Dispatcher
     @instruction_to_function[Instructions::OP_NOP] = [:@alu, 'nop']
     (Instructions::OP_ADD..Instructions::OP_SUB).each { |op_code| @instruction_to_function[op_code] = [:@alu, 'add_or_sub'] }
     @instruction_to_function[Instructions::OP_MUL] = [:@alu, 'mul']
+    @instruction_to_function[Instructions::OP_DIV] = [:@alu, 'div']
+    (Instructions::OP_CMPA..Instructions::OP_CMPX).each { |op_code| @instruction_to_function[op_code] = [:@alu, 'compare'] }
   end
   def initialize_mu_functions
     (Instructions::OP_LDA..Instructions::OP_LDXN).each { |op_code| @instruction_to_function[op_code] = [:@mu, 'load_in_register'] }
@@ -29,6 +31,7 @@ class Dispatcher
 
   def initialize_cu_functions
     @instruction_to_function[Instructions::OP_HLT] = [:@cu, 'generic_operation']
+    @instruction_to_function[Instructions::OP_IOC] = [:@alu, 'nop']
     @instruction_to_function[Instructions::OP_JMP] = [:@cu, 'jump']
     (Instructions::OP_JAN..Instructions::OP_JXNP).each { |op_code| @instruction_to_function[op_code] = [:@cu, 'jump_check_register'] }
   end

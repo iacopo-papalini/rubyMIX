@@ -44,6 +44,12 @@ describe 'Convert line to word' do
     word.bytes.should eq [1,1,0,2,48]
 
   end
+  it 'should convert correctly a ENTA instruction with negative address' do
+    word = @instruction_parser.as_word('ENTA      -65')
+    word.bytes.should eq [1,1,0,2,48]
+    word.sign.should eq Sign::NEGATIVE
+
+  end
 
   it 'should parse correctly an EQU meta instruction' do
     instruction = @instruction_parser.as_instruction('EQU 1000')

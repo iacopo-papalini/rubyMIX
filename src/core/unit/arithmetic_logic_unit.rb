@@ -40,6 +40,31 @@ class ArithmeticLogicUnit < AbstractUnit
     @cpu.ra.sign = @cpu.rx.sign = sign
   end
 
+  def div(instruction)
+    divisor = extract_word_from_memory(instruction).long
+    ra = @cpu.ra.long
+    if divisor.abs <= ra.abs
+      @overflow = true
+      return
+    end
+    temp = DoubleWord.new(@cpu.ra.bytes + @cpu.rx.bytes)
+    temp.sign = @cpu.ra.sign
+    temp=temp.long
+    @cpu.rx.store_long(@cpu.ra.sign * (temp.abs % divisor))
+    @cpu.ra.store_long(temp / divisor)
+  end
+
+  def compare(instruction)
+    op_code, f = extract_op_code_and_modifier(instruction)
+    register = select_register_from_op_code(op_code, Instructions::OP_CMPA)
+    word = extract_word_from_memory(instruction)
+    left, right = explode_f(f)
+    r_value =  register.long(left, right)
+    m_value =  word.long(left, right)
+    @lt = r_value < m_value
+    @eq = r_value == m_value
+    @gt = r_value > m_value
+  end
 
   def less
     [@lt, @eq, @gt] == [true, false, false]

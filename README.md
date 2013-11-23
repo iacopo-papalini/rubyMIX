@@ -12,7 +12,7 @@ Known issues
     * missing I/O operations
     * missing alphanumeric symbols operations
     * missing Shift operations
-    * ALF meta instruction missing
+    * missing DIV instruction
     * Literal constants missing (=A+B=)
 
 * Assembly format more relaxed than the original one (no fixed length fields)

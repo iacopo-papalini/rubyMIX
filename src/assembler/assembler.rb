@@ -68,7 +68,7 @@ class Assembler
   end
 
   def define_constant(name, value)
-    @logger.debug('Defining constant  %s' % name)
+    @logger.debug('Defining constant  %s=%d' % [name, value])
     @constants[name] = value
 
     resolve_future_references(name, value)
@@ -154,8 +154,7 @@ class Assembler
   def set_memory_location(location, word)
     @set_memory_locations[location] = word
     if @logger.debug?
-      @logger.debug 'Set in memory at location %d = %s (%s)' %[location, word, @disassembler.disassemble(word)] if @disassembler != nil
-      @logger.debug 'Set in memory at location %d = %s' %[location, word] if @disassembler==nil
+      @logger.debug 'Set in memory at location %d = %s' %[location, word]
     end
 
   end

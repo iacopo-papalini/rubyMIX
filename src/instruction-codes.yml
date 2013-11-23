@@ -137,8 +137,7 @@ Instructions:
     - DECX
     - ENTX
     - ENNX
-  - - CMPA
-    - FCMP
+  - CMPA
   - CMP1
   - CMP2
   - CMP3
@@ -151,4 +150,5 @@ Instructions:
   - ORIG
   - END
   - CON
+  - ALF
 

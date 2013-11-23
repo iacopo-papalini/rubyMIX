@@ -65,7 +65,7 @@ module WordFunctions
   end
 
   def store_long(long)
-    @sign = long > 0 ? Sign::POSITIVE : Sign::NEGATIVE
+    @sign = long >= 0 ? Sign::POSITIVE : Sign::NEGATIVE
     long = long.abs
     (self.bytes.length - 1).downto 0 do |i|
       @bytes[i] = long % (Limits::BYTE + 1)
@@ -125,5 +125,26 @@ class Word
     self.bytes == another_word.bytes && self.sign==another_word.sign
   end
 
+
+end
+
+class DoubleWord
+  attr_reader :bytes
+  attr_accessor :sign
+  include WordFunctions
+
+  def initialize(sign = Sign::POSITIVE, bytes = [0,0,0,0,0,0, 0, 0, 0, 0])
+    if sign.kind_of?(Array)
+      bytes = sign
+      sign = Sign::POSITIVE
+    end
+    @bytes = bytes.map { |a| a & Limits::BYTE }
+    @sign = sign
+  end
+
+  def ==(another_word)
+    return false if another_word == nil
+    self.bytes == another_word.bytes && self.sign==another_word.sign
+  end
 
 end

@@ -1,6 +1,24 @@
 require File.dirname(__FILE__) +'/../../src/autoload.rb'
 require 'rspec'
 
+def verify_long_division(a, divisor, x)
+  very_long =  (a << (Limits::BITS_IN_BYTE*Limits::BYTES_IN_WORD) ) + x
+  dw = DoubleWord.new.store_long(very_long)
+  division = dw.long / divisor
+  remainder = dw.sign * (dw.long.abs % divisor)
+  @testing.ra.load_value(Word.new(dw.bytes[0..4]))
+  @testing.ra.sign = dw.sign
+
+  @testing.rx.load_value(Word.new(dw.bytes[5..9]))
+  @testing.change_memory_word(@address, Word.new().store_long(divisor))
+  @testing.change_memory_word(@testing.ip, @instruction_parser.as_word('DIV %d' % @address))
+
+  @testing.clock
+
+  @testing.ra.long.should eq division
+  @testing.rx.long.should eq remainder
+end
+
 describe 'Correctly implements arithmetic Operations' do
   before(:each) do
     @testing = CPU.new
@@ -96,4 +114,30 @@ describe 'Correctly implements arithmetic Operations' do
     @testing.rx.sign.should eq Sign::POSITIVE
   end
 
+  it 'should perform a simple division as in the sixth example of The Art of Computer Programming v.1 pag 132' do
+    @testing.ra.load_value( Word.new().store_long(0))
+    @testing.rx.load_value( Word.new().store_long(17))
+    @testing.change_memory_word(@address, Word.new().store_long(3))
+    @testing.change_memory_word(@testing.ip, @instruction_parser.as_word('DIV %d' % @address))
+
+    @testing.clock
+
+    @testing.ra.long.should eq 5
+    @testing.rx.long.should eq 2
+  end
+
+  it 'should perform long division' do
+    a = 1
+    x = 10
+    divisor = 7
+    verify_long_division(a, divisor, x)
+  end
+  it 'should perform long division with negative divisor' do
+    a = -3
+    x = -1
+    divisor = 7
+    verify_long_division(a, divisor, x)
+    @testing.ra.sign.should eq Sign::NEGATIVE
+    @testing.rx.sign.should eq Sign::NEGATIVE
+  end
 end

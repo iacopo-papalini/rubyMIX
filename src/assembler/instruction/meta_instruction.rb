@@ -1,10 +1,12 @@
 class MetaInstruction < Instruction
 
+  #noinspection RubyResolve
   def value
     raise 'Empty address' if @parts_address == nil
     @expression_evaluator.evaluate(@parts_address)
   end
 
+  #noinspection RubyResolve
   def code
     @parts_op
   end
@@ -49,7 +51,25 @@ class CONInstruction < MetaInstruction
   end
 
   def as_word
+    #noinspection RubyResolve
     Word.new().store_long(@expression_evaluator.evaluate(@parts_address))
   end
 end
 
+class ALFInstruction < MetaInstruction
+  def  initialize(parts)
+    super(parts)
+  end
+  def execute(_, _)
+    nil
+  end
+
+  def as_word
+    #noinspection RubyResolve
+    Word.new().store_string(@parts_address.sub('_', ' '))
+  end
+
+  def has_future_reference?
+    return false
+  end
+end

@@ -35,6 +35,20 @@ describe 'Convert an assembly program and store in memory' do
   end
 
   #noinspection RubyResolve
+  it 'should parse a line with a data ALF definition' do
+    @assembler.parse_lines [' ORIG 3000', 'XX ALF 00000']
+    @assembler.set_memory_locations.count.should eq 1
+    @assembler.set_memory_locations[3000].should eq Word.new(Sign::POSITIVE, [30, 30, 30, 30, 30])
+  end
+
+  #noinspection RubyResolve
+  it 'should parse a line with a data ALF definition with spaces replaced with _' do
+    @assembler.parse_lines [' ORIG 3000', 'XX ALF 00_00']
+    @assembler.set_memory_locations.count.should eq 1
+    @assembler.set_memory_locations[3000].should eq Word.new(Sign::POSITIVE, [30, 30, 0, 30, 30])
+  end
+
+  #noinspection RubyResolve
   it 'should parse a line with the ORIG meta instruction' do
     @assembler.parse_line ' ORIG 3000'
     @assembler.set_memory_locations.count.should eq 0

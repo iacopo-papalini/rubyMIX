@@ -14,7 +14,7 @@ class Instruction
     if @parts_address == nil
       return [0, 0]
     end
-    address = @expression_evaluator.evaluate(@parts_address)
+    address = @expression_evaluator.evaluate(@parts_address).abs
     [address >> Limits::BITS_IN_BYTE, address & Limits::BYTE]
   end
 
@@ -51,7 +51,6 @@ class CpuInstruction < Instruction
 
     sign = extract_sign
     address = extract_address
-
     Word.new(sign, address + [i, f, op_code])
   end
 
