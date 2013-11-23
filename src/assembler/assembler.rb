@@ -6,6 +6,8 @@ class Assembler
   attr_accessor :location_counter
   attr_accessor :starting_ip
   attr_writer :disassembler
+  attr_writer :logger
+
   LINE_REGEXP = /(?<LOC>[A-Z0-9]{1,10})?\s(?<INSTRUCTION>.+)(#(?<REMARKS>.*)\s+)?/
 
   def initialize

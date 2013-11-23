@@ -163,4 +163,12 @@ describe 'Convert an assembly program and store in memory' do
     @assembler.set_memory_locations[3001].should eq @instruction_parser.as_word('STA 1')
     @assembler.set_memory_locations[3002].should eq @instruction_parser.as_word('STA 1')
   end
+
+  #noinspection RubyResolve
+  it 'should correctly translate a negative address value' do
+    lines = [' ORIG 3000', 'L EQU 500', ' ENT1 1-L']
+    @assembler.parse_lines lines
+    @assembler.set_memory_locations[3000].should eq @instruction_parser.as_word('ENT1 -499')
+
+  end
 end

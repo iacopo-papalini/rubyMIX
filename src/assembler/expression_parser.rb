@@ -65,7 +65,7 @@ class ExpressionParser
     return @symbol_resolver.resolve_constant(string) if is_symbol string or is_asterisk string
     return string.to_i if is_number string
 
-    return evaluate string[1.. -1] if string[0] == '+'
+    return evaluate(string[1.. -1]) if string[0] == '+'
     nil
   end
 end

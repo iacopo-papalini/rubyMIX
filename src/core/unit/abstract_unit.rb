@@ -1,7 +1,8 @@
 class AbstractUnit
 
-  def initialize(cpu)
+  def initialize(cpu, logger)
     @cpu = cpu
+    @logger = logger
    end
 
   def extract_op_code_and_modifier(instruction)

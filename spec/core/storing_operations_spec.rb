@@ -96,4 +96,13 @@ describe 'Correctly implements storing Operations' do
     @testing.clock
     @testing.mu.memory[@address].should eq Word.new(Sign::POSITIVE, [0, 0, 0, 4, 5])
   end
+
+  it 'should correctly store short register' do
+    @testing.ri[1].store_long(-65)
+    @testing.change_memory_word(@testing.ip, @instruction_parser.as_word('ST2 %d' % @address))
+    @testing.clock
+
+    @testing.mu.memory[@address].to_s.should eq Word.new(Sign::NEGATIVE, [0,0,0,1,1]).to_s
+
+  end
 end

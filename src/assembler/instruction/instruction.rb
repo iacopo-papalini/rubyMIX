@@ -12,19 +12,17 @@ class Instruction
 
   def extract_address
     if @parts_address == nil
-      return [0, 0]
+      return [Sign::POSITIVE, [0, 0]]
     end
-    address = @expression_evaluator.evaluate(@parts_address).abs
-    [address >> Limits::BITS_IN_BYTE, address & Limits::BYTE]
+    address = @expression_evaluator.evaluate(@parts_address)
+    sign = address >=0 ? Sign::POSITIVE: Sign::NEGATIVE
+    address = address.abs
+    [sign, [address >> Limits::BITS_IN_BYTE, address & Limits::BYTE]]
   end
 
   def check_address
     @parsed_address = @expression_evaluator.evaluate(@parts_address) if @parsed_address == nil
     @parsed_address
-  end
-
-  def extract_sign
-    (@parts_address != nil && @parts_address[0] == '-') ? Sign::NEGATIVE : Sign::POSITIVE
   end
 
   def has_future_reference?
@@ -49,8 +47,7 @@ class CpuInstruction < Instruction
     f = extract_f if f == nil or @parts_f != nil
     i = extract_i
 
-    sign = extract_sign
-    address = extract_address
+    sign , address = extract_address
     Word.new(sign, address + [i, f, op_code])
   end
 

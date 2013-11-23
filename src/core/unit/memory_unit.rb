@@ -1,11 +1,11 @@
 class MemoryUnit < AbstractUnit
   attr_accessor :memory
 
-  def initialize(cpu)
+  def initialize(cpu, logger)
     # Just to let IntelliJ detect the field, otherwise it keeps complaining
     @cpu = nil
-    super(cpu)
-
+    @logger = nil
+    super(cpu, logger)
     @memory = Array.new(Limits::MEMORY_SIZE)
     Limits::MEMORY_SIZE.times do |i|
       @memory[i] = Word.new
@@ -22,6 +22,7 @@ class MemoryUnit < AbstractUnit
     word = extract_word_from_memory(instruction)
     word.negate if negate
     left, right = explode_f(f)
+    @logger.debug('Setting %s (%d,%d) from word at location %d into register' %[word.to_s, left, right, calculate_modified_address(instruction)])  if @logger.debug?
     register.load_value(word, left, right)
   end
 
@@ -32,6 +33,7 @@ class MemoryUnit < AbstractUnit
     register = select_register_from_op_code(op_code, Instructions::OP_STA)
     word = extract_word_from_memory(instruction)
     left, right = explode_f(f)
+    @logger.debug('Setting %s (%d,%d) word at location %d' %[register.to_s, left, right, calculate_modified_address(instruction)])  if @logger.debug?
     word.store_value(register, left, right)
   end
 

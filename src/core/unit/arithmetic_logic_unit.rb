@@ -4,10 +4,11 @@ class ArithmeticLogicUnit < AbstractUnit
   attr_accessor :lt
   attr_accessor :overflow
 
-  def initialize(cpu)
+  def initialize(cpu, logger)
     # Just to let IntelliJ detect the field, otherwise it keeps complaining
     @cpu = nil
-    super(cpu)
+    @logger = nil
+    super(cpu, logger)
     @eq = @gt = @lt = @overflow = @halt = false
   end
 

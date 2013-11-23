@@ -36,17 +36,33 @@ module WordFunctions
   end
 
   def store_value(word, left = 0, right = Limits::BYTES_IN_WORD)
-    if left == 0
-      @sign = word.sign
-      left = 1
-    end
+    left = set_sign_for_store(left, word.sign)
+    first_byte_to_copy = [left, Limits::BYTES_IN_WORD - word.bytes.length + 1].max
 
+    copy_bytes(first_byte_to_copy, right, word)
+    set_zero_for_short_word(first_byte_to_copy, left)
+  end
+
+  def set_zero_for_short_word(first_byte_to_copy, left)
+    (first_byte_to_copy-1).downto(left) do |i|
+      @bytes[i - 1] = 0
+    end
+  end
+
+  def copy_bytes(first_byte_to_copy, right, word)
     counter = word.bytes.length
-    right.downto(left) do |i|
+    right.downto(first_byte_to_copy) do |i|
       counter -= 1
       @bytes[i - 1] = word.bytes[counter]
     end
+  end
 
+  def set_sign_for_store(left, sign)
+    if left == 0
+      @sign = sign
+      left = 1
+    end
+    left
   end
 
 

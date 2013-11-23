@@ -3,10 +3,11 @@ class ControlUnit < AbstractUnit
   attr_accessor :ip
   attr_accessor :halt
 
-  def initialize(cpu)
+  def initialize(cpu, logger)
     # Just to let IntelliJ detect the field, otherwise it keeps complaining
     @cpu = nil
-    super(cpu)
+    @logger = nil
+    super(cpu, logger)
     @rj = JumpRegister.new
     @ip = 0
   end

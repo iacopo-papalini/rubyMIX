@@ -12,6 +12,7 @@ class CPU
   attr_reader :alu
   attr_reader :cu
   attr_reader :mu
+  attr_reader :logger
 
   INC = 0
   DEC = 1
@@ -28,9 +29,9 @@ class CPU
     end
 
     @disassembler = nil
-    @alu = ArithmeticLogicUnit.new(self)
-    @cu = ControlUnit.new(self)
-    @mu = MemoryUnit.new(self)
+    @alu = ArithmeticLogicUnit.new(self, @logger)
+    @cu = ControlUnit.new(self, @logger)
+    @mu = MemoryUnit.new(self, @logger)
 
   end
 
