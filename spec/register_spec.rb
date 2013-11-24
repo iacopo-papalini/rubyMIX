@@ -1,5 +1,6 @@
-require File.dirname(__FILE__) +'/../src/autoload.rb'
+$LOAD_PATH << File.dirname(__FILE__) +'/../src'
 require 'rspec'
+require 'core/register'
 
 # See page 127 of 'The Art of Computer Programming, Vol. 1'
 describe 'Register' do

@@ -1,6 +1,8 @@
-require File.dirname(__FILE__) +'/../../src/autoload.rb'
+$LOAD_PATH << File.dirname(__FILE__) +'/../../src'
+$LOAD_PATH << File.dirname(__FILE__) +'/../../generated'
 require 'rspec'
 require 'rspec/mocks'
+require 'assembler/expression_parser'
 
 describe 'Parses MIXAL expressions' do
   before(:each) do

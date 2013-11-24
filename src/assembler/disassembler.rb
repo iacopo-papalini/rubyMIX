@@ -1,3 +1,6 @@
+require 'instructions'
+require 'assembler/instruction/instruction'
+
 class Disassembler
   # To change this template use File | Settings | File Templates.
   def disassemble(word)

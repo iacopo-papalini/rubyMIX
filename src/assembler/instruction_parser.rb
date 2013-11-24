@@ -1,9 +1,13 @@
 require 'yaml'
+require 'instructions'
+require 'assembler/instruction/instruction'
+require 'assembler/instruction/meta_instruction'
+require 'assembler/future_reference'
+require 'core/word'
+require 'core/cpu'
 
 class InstructionParser
   attr_writer :expression_evaluator
-
-
 
   def initialize
     # See The Art Of Computer Programming V.1 pag 128

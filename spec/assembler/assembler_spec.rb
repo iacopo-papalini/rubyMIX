@@ -1,5 +1,7 @@
-require File.dirname(__FILE__) +'/../../src/autoload.rb'
+$LOAD_PATH << File.dirname(__FILE__) +'/../../src'
+$LOAD_PATH << File.dirname(__FILE__) +'/../../generated'
 require 'rspec'
+require 'assembler/assembler'
 
 RSpec.configure do |c|
   # declare an exclusion filter
@@ -8,7 +10,9 @@ end
 
 describe 'Convert an assembly program and store in memory' do
   before(:each) do
+    @logger = Logger.new(File.open('/dev/null', 'a'))
     @assembler = Assembler.new
+    @assembler.logger = @logger
     @instruction_parser = InstructionParser.new()
     @instruction_parser.expression_evaluator = ExpressionParser.new(nil)
   end
@@ -119,7 +123,7 @@ describe 'Convert an assembly program and store in memory' do
     lines = [' ORIG 3000', 'START STA 1', 'TEST NOP', ' JMP TEST+5', ' END START']
     @assembler.parse_lines lines
 
-    mix = CPU.new
+    mix = CPU.new(@logger)
     @assembler.load_cpu mix
     mix.ip.should eq 3000
     mix.mu.memory[3000].should eq @instruction_parser.as_word('STA 1')

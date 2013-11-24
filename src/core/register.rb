@@ -1,3 +1,5 @@
+require 'core/word'
+
 class Register
   attr_reader :size
   attr_reader :bytes

@@ -9,11 +9,17 @@ Known issues
 
 * Not all instructions implemented:
     * missing floating point operation
-    * missing I/O operations
-    * missing alphanumeric symbols operations
-    * missing Shift operations
-    * missing DIV instruction
+    * incomplete implementation I/O operations
+    * missing Shift, MOV and other operations
+* Assembler not yet complete
     * Literal constants missing (=A+B=)
 
 * Assembly format more relaxed than the original one (no fixed length fields)
-* Future references can be used inside arbitrary expressions, not only alone
+* ALF constants must use underscore '_' instead of blank
+
+
+
+Usage
+-----
+
+*rubyMIX* comes as a command line program.

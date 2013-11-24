@@ -1,3 +1,4 @@
+require 'core/unit/abstract_unit'
 class IOUnit < AbstractUnit
 
   def initialize(cpu, logger)

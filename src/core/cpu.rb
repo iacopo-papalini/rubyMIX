@@ -1,5 +1,10 @@
 require 'logger'
-
+require 'core/register'
+require 'core/unit/arithmetic_logic_unit'
+require 'core/unit/memory_unit'
+require 'core/unit/control_unit'
+require 'core/unit/i_o_unit'
+require 'core/unit/dispatcher'
 # Known limits:
 # - no floating point operations allowed
 # - no I/O
@@ -20,8 +25,8 @@ class CPU
   ENT = 2
   ENN = 3
 
-  def initialize
-    @logger = Logger.new(STDOUT)
+  def initialize(logger)
+    @logger = logger
     @ra = LongRegister.new(:ra)
     @rx = LongRegister.new(:rx)
     @ri = Array.new(6)
@@ -57,7 +62,6 @@ class CPU
   def ip
     @cu.ip
   end
-
 
   def force_instruction_pointer(ip)
     @cu.ip=ip

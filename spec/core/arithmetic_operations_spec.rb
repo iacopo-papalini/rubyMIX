@@ -1,5 +1,9 @@
-require File.dirname(__FILE__) +'/../../src/autoload.rb'
+$LOAD_PATH << File.dirname(__FILE__) +'/../../src'
+$LOAD_PATH << File.dirname(__FILE__) +'/../../generated'
 require 'rspec'
+require 'core/cpu'
+require 'assembler/instruction_parser'
+require 'assembler/expression_parser'
 
 def verify_long_division(a, divisor, x)
   very_long =  (a << (Limits::BITS_IN_BYTE*Limits::BYTES_IN_WORD) ) + x
@@ -21,7 +25,7 @@ end
 
 describe 'Correctly implements arithmetic Operations' do
   before(:each) do
-    @testing = CPU.new
+    @testing = CPU.new (Logger.new(File.open('/dev/null', 'a')))
     @instruction_parser = InstructionParser.new
     @instruction_parser.expression_evaluator =  ExpressionParser.new(nil)
     @address = 2500

@@ -1,5 +1,8 @@
-require File.dirname(__FILE__) +'/../../src/autoload.rb'
+$LOAD_PATH << File.dirname(__FILE__) +'/../../src'
+$LOAD_PATH << File.dirname(__FILE__) +'/../../generated'
 require 'rspec'
+require 'assembler/instruction_parser'
+require 'assembler/expression_parser'
 
 describe 'Convert line to word' do
   before(:each) do

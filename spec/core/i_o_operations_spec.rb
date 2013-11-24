@@ -1,10 +1,13 @@
-require File.dirname(__FILE__) +'/../../src/autoload.rb'
+$LOAD_PATH << File.dirname(__FILE__) +'/../../src'
+$LOAD_PATH << File.dirname(__FILE__) +'/../../generated'
 require 'rspec'
-
+require 'core/cpu'
+require 'assembler/instruction_parser'
+require 'assembler/expression_parser'
 
 describe 'Correctly implements I/O Operations' do
   before(:each) do
-    @testing = CPU.new
+    @testing = CPU.new (Logger.new(File.open('/dev/null', 'a')))
     @instruction_parser = InstructionParser.new
     @instruction_parser.expression_evaluator = ExpressionParser.new(nil)
   end

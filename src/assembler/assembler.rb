@@ -1,4 +1,6 @@
 require 'logger'
+require 'assembler/instruction_parser'
+require 'assembler/expression_parser'
 
 class Assembler
   attr_reader :set_memory_locations

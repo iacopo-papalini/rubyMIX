@@ -1,3 +1,4 @@
+require 'core/unit/abstract_unit'
 class ControlUnit < AbstractUnit
   attr_accessor :rj
   attr_accessor :ip

@@ -1,3 +1,5 @@
+require 'assembler/future_reference'
+
 class ExpressionParser
   BINARY_OPERATION_SPLIT_REGEXP = /^(?<LEFT>[^\/]+)(?<OP>\+|\-|\*|\/{1,2}|:)(?<RIGHT>.+)$/
 

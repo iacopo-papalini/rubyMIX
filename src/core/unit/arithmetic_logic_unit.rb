@@ -1,3 +1,4 @@
+require 'core/unit/abstract_unit'
 class ArithmeticLogicUnit < AbstractUnit
   attr_accessor :eq
   attr_accessor :gt

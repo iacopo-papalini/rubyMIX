@@ -1,6 +1,7 @@
 #encoding: UTF-8
-require File.dirname(__FILE__) +'/../src/autoload.rb'
+$LOAD_PATH << File.dirname(__FILE__) +'/../src'
 require 'rspec'
+require 'core/word'
 
 describe 'MIX word' do
   before(:each) do

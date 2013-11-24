@@ -1,5 +1,9 @@
-require File.dirname(__FILE__) +'/../../src/autoload.rb'
+$LOAD_PATH << File.dirname(__FILE__) +'/../../src'
+$LOAD_PATH << File.dirname(__FILE__) +'/../../generated'
 require 'rspec'
+require 'assembler/disassembler'
+require 'assembler/instruction_parser'
+require 'assembler/expression_parser'
 
 def verify_instruction(instruction)
   word = @instruction_parser.as_word instruction
@@ -8,9 +12,9 @@ end
 
 describe 'Should convert instruction word to assembly' do
   before(:each) do
+    @disassembler = Disassembler.new
     @instruction_parser = InstructionParser.new()
     @instruction_parser.expression_evaluator = ExpressionParser.new(nil)
-    @disassembler = Disassembler.new
   end
 
   it 'should convert correctly NOP' do

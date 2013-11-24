@@ -1,3 +1,4 @@
+require 'core/unit/abstract_unit'
 class MemoryUnit < AbstractUnit
   attr_accessor :memory
 
