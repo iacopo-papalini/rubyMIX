@@ -2,13 +2,20 @@ $LOAD_PATH << File.dirname(__FILE__)
 $LOAD_PATH << File.dirname(__FILE__) + '/../generated'
 require 'runtime/Runtime'
 require 'readline'
-runtime = Runtime.new
+require 'optparse'
 
-Readline.completion_append_character=''
-Readline.completion_proc = Proc.new do |str|
-  Dir[str+'*'].grep( /^#{Regexp.escape(str)}/ )
-end
+options = {}
+OptionParser.new do |opts|
+  opts.banner = "Usage: example.rb [options]"
 
-while buf = Readline.readline("> ", true)
- runtime.execute(buf)
-end
+  opts.on("-v", "--[no-]verbose", "Run verbosely") do |v|
+    options[:verbose] = v
+    end
+  opts.on("-e", "--execute PROGRAM", "Executes program non interactively") do |v|
+    options[:execute] = v
+  end
+end.parse!
+
+runtime = Runtime.new(options)
+
+runtime.run

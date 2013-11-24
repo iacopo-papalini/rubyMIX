@@ -23,11 +23,13 @@ class Dispatcher
     @instruction_to_function[Instructions::OP_DIV] = [:@alu, 'div']
     (Instructions::OP_CMPA..Instructions::OP_CMPX).each { |op_code| @instruction_to_function[op_code] = [:@alu, 'compare'] }
   end
+
   def initialize_mu_functions
     (Instructions::OP_LDA..Instructions::OP_LDXN).each { |op_code| @instruction_to_function[op_code] = [:@mu, 'load_in_register'] }
     (Instructions::OP_STA..Instructions::OP_STJ).each { |op_code| @instruction_to_function[op_code] = [:@mu, 'store_register'] }
     @instruction_to_function[Instructions::OP_STZ] = [:@mu, 'clean_memory']
     (Instructions::OP_ENTA..Instructions::OP_ENTX).each { |op_code| @instruction_to_function[op_code] = [:@mu, 'write_in_register'] }
+    @instruction_to_function[Instructions::OP_MOVE] = [:@mu, 'move']
   end
 
   def initialize_cu_functions

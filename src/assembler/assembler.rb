@@ -14,9 +14,9 @@ class Assembler
 
   def initialize
     @parser = InstructionParser.new
-    @parser.expression_evaluator = ExpressionParser.new(self)
+    @expression_evaluator = ExpressionParser.new(self)
+    @parser.expression_evaluator = @expression_evaluator
 
-    # See The Art Of Computer Programming V.1 pag 153
     @constants = {}
     @set_memory_locations = {}
     @location_counter = 0
@@ -72,7 +72,7 @@ class Assembler
   end
 
   def define_constant(name, value)
-    @logger.debug('Defining constant  %s=%d' % [name, value])
+    @logger.debug('Defining constant `%s` => %d' % [name, value])
     @constants[name] = value
 
     resolve_future_references(name, value)
@@ -81,12 +81,13 @@ class Assembler
   def resolve_constant(string)
     string = back_local_reference(string)
     return constants[string] if  @constants.has_key?(string)
+    return @location_counter if string == '*'
     @logger.debug('%s symbol not found, returning future reference' % string)
     FutureReference.new(string)
   end
 
   def back_local_reference(name)
-    (name =~ /^[0-9]B$/) ?  name.sub('B', 'H') :  name
+    (name =~ /^[0-9]B$/) ? name.sub('B', 'H') : name
   end
 
   def parse_line (line, location = @location_counter)
@@ -96,6 +97,21 @@ class Assembler
     parts = LINE_REGEXP.match line
     instruction = @parser.as_instruction (parts['INSTRUCTION'])
     assemble_line(instruction, parts)
+  end
+
+  def create_unresolved_future_references
+    last_instruction_location_counter = @location_counter
+    @future_references.each_key do |name|
+      value = @expression_evaluator.is_inline_constant?(name) ? @location_counter : last_instruction_location_counter
+      if @expression_evaluator.is_inline_constant?(name)
+        set_memory_locations[@location_counter] = Word.new().store_long(@expression_evaluator.inline_constant(name))
+        @logger.debug('Stored value %d at new location %d' % [set_memory_locations[@location_counter].long, @location_counter]) if @logger.debug?
+        @location_counter += 1
+      end
+
+      @logger.debug('Defining unresolved future reference `%s` => %d' % [name, value])
+      define_constant(name, value)
+    end
   end
 
   private
@@ -128,8 +144,9 @@ class Assembler
 
     delete_local_reference_from_constants(future_reference) if local
   end
+
   def assemble_line(instruction, parts)
-    instruction.execute(self, parts['LOC']) if instruction.class < MetaInstruction
+    instruction.execute_interactive_command(self, parts['LOC']) if instruction.class < MetaInstruction
     if instruction.has_future_reference?
       future_reference = instruction.future_reference
       @logger.debug('Adding future reference %s' %future_reference)
@@ -148,7 +165,7 @@ class Assembler
   end
 
   def delete_local_reference_from_constants(future_reference)
-    @logger.debug('Removing temporary ket %s' % future_reference)
+    @logger.debug('Removing temporary key %s' % future_reference)
     @constants.delete(future_reference)
   end
 
@@ -158,7 +175,6 @@ class Assembler
     if @logger.debug?
       @logger.debug 'Set in memory at location %d = %s' %[location, word]
     end
-
   end
 
   def store_address_in_globals(global_address, location)

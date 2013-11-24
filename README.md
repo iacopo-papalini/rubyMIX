@@ -10,7 +10,7 @@ Known issues
 * Not all instructions implemented:
     * missing floating point operation
     * incomplete implementation I/O operations
-    * missing Shift, MOV and other operations
+    * missing Shift and other operations
 * Assembler not yet complete
     * Literal constants missing (=A+B=)
 
@@ -26,10 +26,13 @@ Usage
 
 * perform the `git clone` command
 * execute `rake` command in the working copy root directory
+
+### Running interactively
+
 * launch `bin/mix`
 
 At this point you have an interactive console through which you can load assembly programs and run them.
-For example typing `load examples/examples/2-500primes.mix` (files path are autocompleted) you will load a copy of the program that calculates the 500 first prime numbers, as described in *TAOCP* from page 147.
+For example typing `load examples/2-500primes.mix` (files path are autocompleted) you will load a copy of the program that calculates the 500 first prime numbers, as described in *TAOCP* from page 147.
 
 By issuing the `debug on` command you will see a lot of debugging information, `debug off` turns the debugging output off.
 
@@ -48,6 +51,9 @@ In order to launch the execution of the program you should issue the `run` comma
 
 For example `run 3015` will execute the program until the instruction at 3015 location will be the next runnable instruction.
 
+### Running non interactively
 
+* launch `bin/mix -e /path/to/program`
 
+The runtime will assemble the specified program, initialize accordingly the virtual machine and run the program, sending the output to stdout.
 

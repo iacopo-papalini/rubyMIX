@@ -19,7 +19,7 @@ class AssemblyDescriptorGenerator
   def generate_class(class_name, constants_list)
     string = ''
     print "Generating class %s\n" %class_name
-    string << "class %s\n\tOPERATION = {}\n\tINSTRUCTION = {}\n\tF_VALUE = {}\n\tF_STR = {}\n" % class_name
+    string << "class %s\n\tOPERATION = {}\n\tINSTRUCTION = {}\n\tF_VALUE = {}\n\tF_STR = {}\n\tF_DEFAULT = {}\n" % class_name
     acc_operations = ''
     acc_f_values = ''
 
@@ -35,11 +35,21 @@ class AssemblyDescriptorGenerator
     string << "end\n"
   end
 
+  DEFAULT_F = 5
+
   def generate_code(code, op_code)
     if code.is_a?(Array)
       multi_instructions_op_code(op_code, code)
     else
-      [create_operation_constants(op_code, code), '']
+      if code =~ /^([A-Z0-9]+)\(([0-9]+)\)$/
+        code = $1
+        default_f = $2
+      else
+        default_f = DEFAULT_F
+      end
+      str = create_operation_constants(op_code, code)
+      str += INDENT + "F_DEFAULT['%s'] = %d\n" % [code, default_f]
+      [str, '']
     end
   end
 

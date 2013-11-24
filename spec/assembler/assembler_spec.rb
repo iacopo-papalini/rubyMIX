@@ -10,7 +10,8 @@ end
 
 describe 'Convert an assembly program and store in memory' do
   before(:each) do
-    @logger = Logger.new(File.open('/dev/null', 'a'))
+    #@logger = Logger.new(File.open('/dev/null', 'a'))
+    @logger = Logger.new(STDOUT)
     @assembler = Assembler.new
     @assembler.logger = @logger
     @instruction_parser = InstructionParser.new()
@@ -111,6 +112,23 @@ describe 'Convert an assembly program and store in memory' do
     @assembler.set_memory_locations[3006].should eq @instruction_parser.as_word('STA 5')
   end
 
+
+  #noinspection RubyResolve
+  it 'should correctly resolve a inline implicit constant' do
+    lines = [' ORIG 3000', '1H CMPA =300=', ' END 1B']
+    @assembler.parse_lines lines
+    @assembler.set_memory_locations[3000].should eq @instruction_parser.as_word('CMPA 3001')
+    @assembler.set_memory_locations[3001].should eq Word.new().store_long(300)
+  end
+
+  #noinspection RubyResolve
+  it 'should correctly resolve a complex inline implicit constant' do
+    lines = [' ORIG 3000','K EQU 500', '1H CMPA =K-300=', ' END 1B']
+    @assembler.parse_lines lines
+    @assembler.set_memory_locations[3000].should eq @instruction_parser.as_word('CMPA 3001')
+    @assembler.set_memory_locations[3001].should eq Word.new().store_long(200)
+  end
+
   #noinspection RubyResolve
   it 'should correctly stop parsing with END' do
     lines = [' ORIG 3000', 'START NOP', 'TEST NOP', ' JMP TEST+5', ' END START']
@@ -184,6 +202,13 @@ describe 'Convert an assembly program and store in memory' do
     lines = [' ORIG 3000', 'L EQU 500', ' ENT1 1-L']
     @assembler.parse_lines lines
     @assembler.set_memory_locations[3000].should eq @instruction_parser.as_word('ENT1 -499')
+  end
 
+  #noinspection RubyResolve
+  it 'should understand * symbol' do
+    lines = ['BUF     ORIG    *+3000','1H      ENT1    1']
+    @assembler.parse_lines lines
+    @assembler.set_memory_locations[3000].should eq   @instruction_parser.as_word('ENT1 1')
+    @assembler.resolve_constant('BUF').should eq 0
   end
 end

@@ -2,14 +2,27 @@ require 'assembler/future_reference'
 
 class ExpressionParser
   BINARY_OPERATION_SPLIT_REGEXP = /^(?<LEFT>[^\/]+)(?<OP>\+|\-|\*|\/{1,2}|:)(?<RIGHT>.+)$/
+  INLINE_CONSTANT_REGEXP = /^=(.+)=$/
 
   def initialize(symbol_resolver)
     @symbol_resolver = symbol_resolver
   end
 
   def is_symbol(string)
-    (string =~ /^[A-Z0-9]{1,10}$/) != nil && (string =~ /[A-Z]/) != nil
+    is_constant_name?(string) || is_inline_constant?(string)
+  end
 
+  def is_constant_name?(string)
+    ((string =~ /^[A-Z0-9]{1,10}$/) != nil && (string =~ /[A-Z]/) != nil)
+  end
+
+  def is_inline_constant?(string)
+    (string =~ INLINE_CONSTANT_REGEXP) != nil
+  end
+
+  def inline_constant(string)
+    string =~ INLINE_CONSTANT_REGEXP
+    evaluate($1)
   end
 
   def is_number(string)
@@ -18,6 +31,10 @@ class ExpressionParser
 
   def is_asterisk(string)
     string =='*'
+  end
+
+  def adjust_negative_value(string)
+    string[0] == '-' ? '0' + string : string
   end
 
   def evaluate(string)
@@ -33,20 +50,18 @@ class ExpressionParser
     evaluate_binary_operation(left, operation, right)
   end
 
-  def adjust_negative_value(string)
-    string[0] == '-' ? '0' + string : string
-  end
 
   BINARY_OPERATIONS = {
-      '+' => lambda{| x,y | x + y},
-      '-' => lambda{| x,y | x - y},
-      '*' => lambda{| x,y | x * y},
-      '/' => lambda{| x,y | x / y},
-      ':' => lambda{| x,y | 8 * x + y},
-      '//'=> lambda{ raise 'Operation not implemented' }
+      '+' => lambda { |x, y| x + y },
+      '-' => lambda { |x, y| x - y },
+      '*' => lambda { |x, y| x * y },
+      '/' => lambda { |x, y| x / y },
+      ':' => lambda { |x, y| 8 * x + y },
+      '//' => lambda { raise 'Operation not implemented' }
   }
+
   def evaluate_binary_operation(left, operation, right)
-    raise 'Unknown Operation ' + operation  if ! BINARY_OPERATIONS.has_key? operation
+    raise 'Unknown Operation ' + operation if !BINARY_OPERATIONS.has_key? operation
 
     BINARY_OPERATIONS[operation].call(left, right)
   end

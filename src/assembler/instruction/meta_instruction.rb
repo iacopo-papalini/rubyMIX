@@ -18,7 +18,7 @@ end
 
 class EQUInstruction < MetaInstruction
 
-  def execute(assembler, symbol)
+  def execute_interactive_command(assembler, symbol)
     raise 'Constant name needed for EQU instruction' if symbol == nil
     assembler.define_constant(symbol, value)
   end
@@ -28,7 +28,8 @@ class ORIGInstruction < MetaInstruction
   def  initialize(parts)
     super(parts)
   end
-  def execute(assembler, _)
+  def execute_interactive_command(assembler, symbol)
+    assembler.define_constant(symbol, assembler.location_counter) if symbol != nil
     assembler.location_counter = value
   end
 end
@@ -37,8 +38,9 @@ class ENDInstruction < MetaInstruction
   def  initialize(parts)
     super(parts)
   end
-  def execute(assembler, _)
+  def execute_interactive_command(assembler, _)
     assembler.starting_ip = value
+    assembler.create_unresolved_future_references
   end
 end
 
@@ -46,7 +48,7 @@ class CONInstruction < MetaInstruction
   def  initialize(parts)
     super(parts)
   end
-  def execute(_, _)
+  def execute_interactive_command(_, _)
     nil
   end
 
@@ -60,7 +62,7 @@ class ALFInstruction < MetaInstruction
   def  initialize(parts)
     super(parts)
   end
-  def execute(_, _)
+  def execute_interactive_command(_, _)
     nil
   end
 
@@ -70,6 +72,6 @@ class ALFInstruction < MetaInstruction
   end
 
   def has_future_reference?
-    return false
+    false
   end
 end

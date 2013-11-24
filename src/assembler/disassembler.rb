@@ -9,7 +9,7 @@ class Disassembler
     f = word.bytes[3]
     address = word.long(0, 2)
     i = word.bytes[2]
-    if Instructions::F_STR[op_code] != nil
+    if not has_f(op_code)
       instruction = Instructions::F_STR[op_code][f]
     else
       instruction = Instructions::INSTRUCTION[op_code]
@@ -19,7 +19,7 @@ class Disassembler
 
     str += ' ' + address.to_s if address != 0 or i!=0
     str += ',' + i.to_s if i != 0
-    str += '(%d:%d)' % [f/8, f%8] if f!= CpuInstruction::DEFAULT_F and has_f(op_code)
+    str += '(%d:%d)' % [f/8, f%8] if has_f(op_code) and f != Instructions::F_DEFAULT[instruction]
 
     str
     rescue  Exception => e

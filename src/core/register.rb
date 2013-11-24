@@ -20,7 +20,7 @@ class Register
   end
 
   def to_s
-    'Register %s: %d, %s' % [@name, long, bytes.to_s]
+    '%s: %d, %s' % [@name, long, bytes.to_s]
   end
 end
 

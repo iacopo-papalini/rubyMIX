@@ -44,4 +44,7 @@ describe 'Should convert instruction word to assembly' do
     verify_instruction('HLT')
   end
 
+  it 'should convert correctly MOVE' do
+    verify_instruction('MOVE 10')
+  end
 end

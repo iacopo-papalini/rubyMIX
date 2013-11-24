@@ -39,8 +39,6 @@ end
 
 
 class CpuInstruction < Instruction
-  DEFAULT_F = 5
-
   def as_word
     op_code = Instructions::OPERATION[@parts_op]
     f = Instructions::F_VALUE[@parts_op]
@@ -52,7 +50,7 @@ class CpuInstruction < Instruction
   end
 
   def extract_f
-    @parts_f != nil ? @expression_evaluator.evaluate(@parts_f) : DEFAULT_F
+    (@parts_f != nil) ? @expression_evaluator.evaluate(@parts_f) : Instructions::F_DEFAULT[@parts_op]
   end
 
   def extract_i

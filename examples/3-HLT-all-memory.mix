@@ -1,0 +1,9 @@
+* Section 1.3.1 exercise 20 -
+* Write a program that sets all 4000 memory cells to HLT and terminates
+        ORIG    3995
+START   ENT1    0
+        MOVE    HALT    # Copies HLT in the first memory location
+1H      MOVE    0(43)   # Works with 31, too (any divisor of 3999 will do)
+        JMP     1B
+HALT    HLT     0
+        END     START

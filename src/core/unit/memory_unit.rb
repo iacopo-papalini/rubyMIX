@@ -65,6 +65,17 @@ class MemoryUnit < AbstractUnit
     register.send(operation, modified_address)
   end
 
+  def move(instruction)
+    _, f = extract_op_code_and_modifier(instruction)
+    start_address = calculate_modified_address(instruction)
+    destination_address = @cpu.ri[0].long
+    f.times do |offset|
+      @logger.debug('Copying value %d from %d to %d' %[@memory[start_address + offset].long, start_address + offset, destination_address + offset])  if @logger.debug?
+      @memory[destination_address + offset].load_value(@memory[start_address + offset])
+    end
+    @cpu.ri[0].store_long(destination_address + f)
+  end
+
 
   def change_memory_word(address, new_value)
     validate(address)
