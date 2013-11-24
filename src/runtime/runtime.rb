@@ -40,7 +40,17 @@ class Runtime
       when /^dump\s+(\d+):(\d+)$/  then
         print "Dump %s to %s\n" %[$1, $2]
         ($1.to_i..$2.to_i).each do |i|
+          print i.to_s + ":\t" + @cpu.mu.memory[i].to_s + "\n"
+        end
+      when /^long\s+(\d+):(\d+)$/  then
+        print "Dump as long %s to %s\n" %[$1, $2]
+        ($1.to_i..$2.to_i).each do |i|
           print i.to_s + ":\t" + @cpu.mu.memory[i].long.to_s + "\n"
+        end
+      when /^code\s+(\d+):(\d+)$/  then
+        print "Dump as code %s to %s\n" %[$1, $2]
+        ($1.to_i..$2.to_i).each do |i|
+          print i.to_s + ":\t" + @disassembler.disassemble(@cpu.mu.memory[i])+ "\n"
         end
       when /^text\s+(\d+):(\d+)$/  then
         print "Dump as text %s to %s\n" %[$1, $2]
