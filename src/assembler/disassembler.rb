@@ -9,7 +9,7 @@ class Disassembler
     f = word.bytes[3]
     address = word.long(0, 2)
     i = word.bytes[2]
-    if not has_f(op_code)
+    unless has_f(op_code)
       instruction = Instructions::F_STR[op_code][f]
     else
       instruction = Instructions::INSTRUCTION[op_code]

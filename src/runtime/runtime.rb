@@ -42,7 +42,7 @@ class Runtime
       Dir[str+'*'].grep(/^#{Regexp.escape(str)}/)
     end
 
-    while buf = Readline.readline("> ", true)
+    while (buf = Readline.readline("> ", true))
       execute_interactive_command(buf)
     end
   end

@@ -87,7 +87,7 @@ module WordFunctions
       @bytes[i] = long % (Limits::BYTE + 1)
       long = long >> Limits::BITS_IN_BYTE
     end
-   self
+    self
   end
 
   def string
@@ -97,6 +97,7 @@ module WordFunctions
     end
     ret
   end
+
   def store_string(string)
     (self.bytes.length - 1).downto 0 do |i|
       @bytes[i] = CHARACTERS.index(string[i])
@@ -110,7 +111,7 @@ module WordFunctions
 
   def negate
     @sign = (@sign == Sign::POSITIVE) ? Sign::NEGATIVE : Sign::POSITIVE
-     self
+    self
   end
 
   def to_s
@@ -120,6 +121,29 @@ module WordFunctions
   def as_word
     self
   end
+
+  def shift_left(count)
+    count = [count, @bytes.length].min
+    @bytes.shift(count)
+    @bytes = @bytes + [0] * count
+    self
+  end
+
+  def rotate_left(count)
+    count = count % @bytes.length
+    @bytes.rotate!(count)
+    self
+  end
+  def rotate_right(count)
+    rotate_left(-count)
+  end
+
+  def shift_right(count)
+    count = [count, @bytes.length].min
+    @bytes = ([0] * count + @bytes)[0..@bytes.length-1]
+    self
+  end
+
 end
 
 class Word
@@ -149,7 +173,11 @@ class DoubleWord
   attr_accessor :sign
   include WordFunctions
 
-  def initialize(sign = Sign::POSITIVE, bytes = [0,0,0,0,0,0, 0, 0, 0, 0])
+  def self.from_words(wa, wb)
+    DoubleWord.new(wa.sign, wa.bytes + wb.bytes)
+  end
+
+  def initialize(sign = Sign::POSITIVE, bytes = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
     if sign.kind_of?(Array)
       bytes = sign
       sign = Sign::POSITIVE
@@ -163,4 +191,7 @@ class DoubleWord
     self.bytes == another_word.bytes && self.sign==another_word.sign
   end
 
+  def split_bytes
+    return @bytes[0..4], @bytes[5..9]
+  end
 end

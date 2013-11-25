@@ -7,7 +7,7 @@ require 'assembler/expression_parser'
 
 describe 'Correctly implements storing Operations' do
   before(:each) do
-    @testing = CPU.new (Logger.new(STDOUT))
+    @testing = CPU.new (Logger.new(File.open('/dev/null', 'a')))
     @instruction_parser = InstructionParser.new
     @instruction_parser.expression_evaluator = ExpressionParser.new(nil)
 

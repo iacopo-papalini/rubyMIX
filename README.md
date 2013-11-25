@@ -10,7 +10,7 @@ Known issues
 * Not all instructions implemented:
     * missing floating point operation
     * incomplete implementation I/O operations
-    * missing Shift and other operations
+    * missing rarely used operations
 * Assembler not yet complete
     * Literal constants missing (=A+B=)
 

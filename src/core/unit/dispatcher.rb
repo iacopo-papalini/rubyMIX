@@ -22,6 +22,7 @@ class Dispatcher
     @instruction_to_function[Instructions::OP_MUL] = [:@alu, 'mul']
     @instruction_to_function[Instructions::OP_DIV] = [:@alu, 'div']
     (Instructions::OP_CMPA..Instructions::OP_CMPX).each { |op_code| @instruction_to_function[op_code] = [:@alu, 'compare'] }
+    @instruction_to_function[Instructions::OP_SLA] = [:@alu, 'shift']
   end
 
   def initialize_mu_functions

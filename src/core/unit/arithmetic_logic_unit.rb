@@ -61,11 +61,23 @@ class ArithmeticLogicUnit < AbstractUnit
     register = select_register_from_op_code(op_code, Instructions::OP_CMPA)
     word = extract_word_from_memory(instruction)
     left, right = explode_f(f)
-    r_value =  register.long(left, right)
-    m_value =  word.long(left, right)
+    r_value = register.long(left, right)
+    m_value = word.long(left, right)
     @lt = r_value < m_value
     @eq = r_value == m_value
     @gt = r_value > m_value
+  end
+
+  def shift(instruction)
+    _, f = extract_op_code_and_modifier(instruction)
+    shift = calculate_modified_address(instruction)
+    raise 'Shift value must be non negative' if shift < 0
+    @cpu.ra.shift_left(shift) if f == Instructions::F_SLA
+    @cpu.ra.shift_right(shift) if f == Instructions::F_SRA
+    shift_ra_rx_with_method(:shift_left, shift) if f == Instructions::F_SLAX
+    shift_ra_rx_with_method(:shift_right, shift) if f == Instructions::F_SRAX
+    shift_ra_rx_with_method(:rotate_left, shift)  if f == Instructions::F_SLC
+    shift_ra_rx_with_method(:rotate_right, shift)  if f == Instructions::F_SRC
   end
 
   def less
@@ -88,5 +100,13 @@ class ArithmeticLogicUnit < AbstractUnit
     (@eq or @lt) and not @gt
   end
 
+  private
 
+  def shift_ra_rx_with_method(method, shift)
+    x_sign = @cpu.rx.sign
+    a_sign = @cpu.ra.sign
+    (ra, rx) = DoubleWord.from_words(@cpu.ra, @cpu.rx).send(method, shift).split_bytes
+    @cpu.ra.load_value(Word.new(a_sign, ra))
+    @cpu.rx.load_value(Word.new(x_sign, rx))
+  end
 end
