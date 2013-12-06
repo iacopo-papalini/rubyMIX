@@ -92,6 +92,12 @@ class MemoryUnit < AbstractUnit
     @memory[address].store_value(value)
   end
 
+  def store_string(address, value)
+    validate(address)
+    @logger.debug('Storing %s string at address %d' % [value, address])
+    @memory[address].store_string(value)
+  end
+
   def extract_word_from_memory(instruction)
     modified_address = calculate_modified_address(instruction)
     validate(modified_address)

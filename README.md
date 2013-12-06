@@ -11,12 +11,9 @@ Known issues
     * missing floating point operation
     * incomplete implementation I/O operations
     * missing rarely used operations
-* Assembler not yet complete
-    * Literal constants missing (=A+B=)
 
 * Assembly format more relaxed than the original one (no fixed length fields)
 * ALF constants must use underscore '_' instead of blank
-
 
 
 Usage
@@ -39,7 +36,7 @@ By issuing the `debug on` command you will see a lot of debugging information, `
 You can inspect the machine status using the following commands:
 
 * `dump n:m` with `m` > `n`: will show the memory locations (as words) from `n` to `m`
-* `text n:m` with `m` > `n`: like `dump` but shows the memory bytes as characters (undefined output for locations with bytes that do not map to characters)
+* `text n:m` with `m` > `n`: like `dump` but shows the memory bytes as characters (undefined output for locations having bytes with values that do not represent characters)
 * `long n:m` with `m` > `n`: like `dump` but shows the memory bytes as long integers
 * `code n:m` with `m` > `n`: like `dump` but disassembles the given locations and shows the corresponding MIXAL instructions
 * `next n`: shows the next `n` instructions, starting from current `ip` (instruction pointer) value.
@@ -49,7 +46,7 @@ Issuing an empty line as command produces the execution of a single clock of the
 
 In order to launch the execution of the program you should issue the `run` command. If followed by an integer, the execution will stop once the `ip` value is equal to the given number.
 
-For example `run 3015` will execute the program until the instruction at 3015 location will be the next runnable instruction.
+For example `run 3015` will execute the program until the instruction at location 3015 will be the next runnable instruction.
 
 ### Running non interactively
 

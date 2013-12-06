@@ -42,6 +42,7 @@ class Dispatcher
   def initialize_io_functions
     @instruction_to_function[Instructions::OP_IOC] = [:@io, 'ioc']
     @instruction_to_function[Instructions::OP_OUT] = [:@io, 'out']
+    @instruction_to_function[Instructions::OP_IN] = [:@io, 'in']
 
   end
 end

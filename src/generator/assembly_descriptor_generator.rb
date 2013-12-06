@@ -1,20 +1,8 @@
 require 'yaml'
 
-class AssemblyDescriptorGenerator
-  INDENT = "\t"
+class AssemblyDescriptorGenerator   < AbstractGenerator
 
-  def initialize(file)
-    @file = file
-  end
 
-  def generate
-    data = YAML.load_file(@file)
-    string = ''
-    data.each do |class_name, constants_list|
-      string << generate_class(class_name, constants_list)
-    end
-    string
-  end
 
   def generate_class(class_name, constants_list)
     string = ''

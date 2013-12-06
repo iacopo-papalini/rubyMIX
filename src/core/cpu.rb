@@ -79,8 +79,8 @@ class CPU
     @mu.memory.size
   end
 
-  def bind_io_device(device_id, device_object)
-    @io.bind_device(device_id, device_object)
+  def bind_io_device(device_id, read_stream = nil, write_stream = nil)
+    @io.bind_device(device_id, read_stream, write_stream)
   end
 
 end
