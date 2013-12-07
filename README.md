@@ -40,7 +40,9 @@ You can inspect the machine status using the following commands:
 * `long n:m` with `m` > `n`: like `dump` but shows the memory bytes as long integers
 * `code n:m` with `m` > `n`: like `dump` but disassembles the given locations and shows the corresponding MIXAL instructions
 * `next n`: shows the next `n` instructions, starting from current `ip` (instruction pointer) value.
-* `ra`, `rx`, `ri[1-6]`: shows the contents of the specified register, as long
+* `ra`, `rx`, `ri[1-6]`: shows the contents of the specified register, as word
+* `text ra`, `text rx`, `text ri[1-6]`: shows the contents of the specified register, as string
+* `long ra`, `long rx`, `long ri[1-6]`: shows the contents of the specified register, as long
 
 Issuing an empty line as command produces the execution of a single clock of the CPU and repeats the last command.
 
@@ -54,3 +56,10 @@ For example `run 3015` will execute the program until the instruction at locatio
 
 The runtime will assemble the specified program, initialize accordingly the virtual machine and run the program, sending the output to stdout.
 
+### Handling I/O
+
+By default, the only I/O device working is the line printer, that is mapped over STDIO.
+
+If you want to bind another device use the `bind` command:
+
+* `bind id [file]` with `id` an integer between 0 and 20 and file a file name, or either STDIN or STDOUT

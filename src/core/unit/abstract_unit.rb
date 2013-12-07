@@ -3,7 +3,11 @@ class AbstractUnit
   def initialize(cpu, logger)
     @cpu = cpu
     @logger = logger
-   end
+  end
+
+  def reset
+
+  end
 
   def extract_op_code_and_modifier(instruction)
     return instruction.bytes[4], instruction.bytes[3]

@@ -27,18 +27,26 @@ class CPU
 
   def initialize(logger)
     @logger = logger
-    @ra = LongRegister.new(:ra)
-    @rx = LongRegister.new(:rx)
-    @ri = Array.new(6)
-    @ri.length.times do |i|
-      @ri[i] = ShortRegister.new('ri%d' %(i+1))
-    end
 
     @disassembler = nil
     @alu = ArithmeticLogicUnit.new(self, @logger)
     @cu = ControlUnit.new(self, @logger)
     @mu = MemoryUnit.new(self, @logger)
     @io = IOUnit.new(self, @logger)
+    reset
+  end
+
+  def reset
+    @ra = LongRegister.new(:ra)
+    @rx = LongRegister.new(:rx)
+    @ri = Array.new(6)
+    @ri.length.times do |i|
+      @ri[i] = ShortRegister.new('ri%d' %(i+1))
+    end
+    @alu.reset
+    @cu.reset
+    @mu.reset
+    @io.reset
   end
 
   def clock
@@ -50,7 +58,9 @@ class CPU
 
     unit, function_name = Dispatcher.new.dispatch(instruction)
     instance_variable_get(unit).send(function_name, instruction)
-
+    if @cu.halt and @logger.debug?
+      @logger.debug('Halt')
+    end
     @cu.increase_ip
   end
 

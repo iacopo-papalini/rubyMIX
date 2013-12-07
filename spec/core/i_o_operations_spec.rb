@@ -8,8 +8,8 @@ require 'devices'
 
 describe 'Correctly implements I/O Operations' do
   before(:each) do
-    #logger = Logger.new(File.open('/dev/null', 'a'))
-    logger = Logger.new(STDOUT)
+    logger = Logger.new(File.open('/dev/null', 'a'))
+    #logger = Logger.new(STDOUT)
     @testing = CPU.new (logger)
     @instruction_parser = InstructionParser.new
     @instruction_parser.expression_evaluator = ExpressionParser.new(nil)
@@ -59,6 +59,16 @@ describe 'Correctly implements I/O Operations' do
     @testing.mu.memory[22].string.should eq 'EFGHI'
     @testing.mu.memory[23].string.should eq 'LMNOP'
     @testing.mu.memory[24].long.should eq 0
+  end
+
+  it 'should treat new lines as blank spaces and lowercase as uppercase' do
+    paper_tape = 20
+    string = StringIO.new("ab\nCD")
+    @testing.change_memory_word(@testing.ip, @instruction_parser.as_word('IN 10(%d)' % paper_tape))
+    @testing.bind_io_device(paper_tape, string)
+
+    @testing.clock
+    @testing.mu.memory[10].string.should eq 'AB CD'
 
   end
 end

@@ -12,7 +12,7 @@ module Sign
 end
 
 module WordFunctions
-  CHARACTERS = " ABCDEFGHI∆JKLMONPQR∑∏STUVWXYZ0123456789.,()+-*/=$<>@;:'"
+  CHARACTERS = " ABCDEFGHI∆JKLMONPQR∑∏STUVWXYZ0123456789.,()+-*/=$<>@;:'" + '?' * 8   # values 56-63 are mapped with '?'
 
   def load_value (word, left = 0, right = Limits::BYTES_IN_WORD)
     if left == 0
@@ -100,9 +100,15 @@ module WordFunctions
 
   def store_string(string)
     (self.bytes.length - 1).downto 0 do |i|
-      @bytes[i] = CHARACTERS.index(string[i])
+      @bytes[i] = character_to_byte(string[i])
     end
     self
+  end
+
+  def character_to_byte(character)
+    character = ' ' if character == "\n"
+    character = character.to_s.upcase
+    CHARACTERS.index(character)
   end
 
   def increment_value(value)

@@ -1,0 +1,42 @@
+* TAOCP Exercise 1.3.2.13
+PAPER   EQU     20
+BUF     EQU     2013
+COUNTER EQU     2100
+STRING  EQU     2164
+BLOCK   EQU     -13
+PRINTL  EQU     24
+SWAP    EQU     1999
+        ORIG    1000
+START   IOC     0(PAPER)
+READIO  IN      BUF+BLOCK(PAPER)
+        ENT1    BLOCK
+LOADX   LDX     BUF,1
+        ENTA    0
+SHIFT   SLAX    1
+        CMPA    =46=        ; 46=> terminates
+        JE      OUTPUT
+        STA     SWAP
+        LD3     SWAP
+        ENTA    1
+        ADD     COUNTER,3
+        STA     COUNTER,3
+        ENTA    0
+        JXNZ    SHIFT
+        INC1    1
+        J1NP    LOADX
+        JMP     READIO
+OUTPUT  ENT1    1       ; 'A' character
+        ENT2    0
+RENDER  LDA     COUNTER,1
+        JAZ     NEXT
+        CHAR
+        ST1     STRING
+        STZ     STRING+1
+        STA     STRING+2
+        STX     STRING+3
+        OUT     STRING(18)
+NEXT    INC1    1
+        CMP1    =64=
+        JL      RENDER
+        HLT
+        END START

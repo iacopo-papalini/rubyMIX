@@ -7,11 +7,15 @@ class MemoryUnit < AbstractUnit
     @cpu = nil
     @logger = nil
     super(cpu, logger)
+    reset
+
+  end
+
+  def reset
     @memory = Array.new(Limits::MEMORY_SIZE)
     Limits::MEMORY_SIZE.times do |i|
       @memory[i] = Word.new
     end
-
   end
 
   # Loads the contents of a memory cell in a register (negates  if needed)

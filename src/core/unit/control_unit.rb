@@ -9,8 +9,13 @@ class ControlUnit < AbstractUnit
     @cpu = nil
     @logger = nil
     super(cpu, logger)
+    reset
+  end
+
+  def reset
     @rj = JumpRegister.new
     @ip = 0
+    @halt = false
   end
 
   def increase_ip

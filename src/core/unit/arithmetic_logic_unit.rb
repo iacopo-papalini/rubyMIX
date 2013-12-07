@@ -10,9 +10,12 @@ class ArithmeticLogicUnit < AbstractUnit
     @cpu = nil
     @logger = nil
     super(cpu, logger)
-    @eq = @gt = @lt = @overflow = @halt = false
+    reset
   end
 
+  def reset
+    @eq = @gt = @lt = @overflow = false
+  end
   # @param [Word] _ ignored instruction
   def nop (_)
 

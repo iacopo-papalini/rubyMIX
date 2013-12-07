@@ -56,10 +56,19 @@ class Runtime
       when /^load\s+(.+)$/ then
         @assembler.parse_lines File.open($1.strip, 'r')
         print "Loaded %s\n" %$1
+        @cpu.reset
         @assembler.load_cpu(@cpu)
       when /^(r[ax])$/ then
-        print @cpu.send($1).long.to_s + "\n"
+        print @cpu.send($1).to_s + "\n"
       when /^ri([1-6])$/ then
+        print @cpu.ri[$1.to_i - 1].to_s + "\n"
+      when /^text (r[ax])$/ then
+        print @cpu.send($1).string + "\n"
+      when /^text ri([1-6])$/ then
+        print @cpu.ri[$1.to_i - 1].string + "\n"
+      when /^long (r[ax])$/ then
+        print @cpu.send($1).long.to_s + "\n"
+      when /^long ri([1-6])$/ then
         print @cpu.ri[$1.to_i - 1].long.to_s + "\n"
       when /^r$/ then
         print "%s\t%s\tgt:%s\teq:%s\tlt:%s\n" %[ @cpu.ra, @cpu.rx, @cpu.alu.gt, @cpu.alu.eq, @cpu.alu.lt]
@@ -92,6 +101,7 @@ class Runtime
           print i.to_s + ":\t" + @cpu.mu.memory[i].string + "\n"
         end
       when /^run(\s(\d+))?$/ then
+        @cpu.clock
         while ($2 == nil or @cpu.ip != $2.to_i) and !@cpu.halt
           @cpu.clock
         end
@@ -99,6 +109,8 @@ class Runtime
         @cpu.logger.level = Logger::INFO
       when /^debug on/ then
         @cpu.logger.level = Logger::DEBUG
+      when /bind\s+(\d{1,2})\s+(.+)/ then
+        @cpu.bind_io_device($1.to_i, File.open($2) )
       else
         print "Unknown command <%s>\n" % command
     end
