@@ -58,7 +58,7 @@ The runtime will assemble the specified program, initialize accordingly the virt
 
 ### Handling I/O
 
-By default, the only I/O device working is the line printer, that is mapped over STDIO.
+By default, the only I/O device working is the line printer, that is mapped over STDIN.
 
 If you want to bind another device use the `bind` command:
 
